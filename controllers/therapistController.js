@@ -1,5 +1,6 @@
 const Therapist = require('../models/therapistSchema');
 const User = require('../models/userSchema');
+const Consultation = require('../models/consultationSchema')
 
 // ✅ Render the Therapist Verification Page
 module.exports.renderVerificationPage = async (req, res) => {
@@ -83,15 +84,68 @@ module.exports.renderChatPage = async (req, res) => {
     res.render('pages/chat.ejs');
 }
 
-module.exports.findTherapist =  async (req, res) => {
+// module.exports.findTherapist =  async (req, res) => {
+//     try {
+//         const therapist = await Therapist.findById(req.params.id).populate('user').lean();
+//         const user = await User.findById()
+
+//         if (!therapist) {
+//             return res.status(404).send("Therapist not found");
+//         }
+
+//         res.render('pages/therapistProfile.ejs', { therapist });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// };
+
+module.exports.findTherapist = async (req, res) => {
     try {
         const therapist = await Therapist.findById(req.params.id).populate('user').lean();
+        const user = req.user; // ✅ Use `req.user` to get the currently logged-in user
 
         if (!therapist) {
             return res.status(404).send("Therapist not found");
         }
 
-        res.render('pages/therapistProfile.ejs', { therapist });
+        res.render('pages/therapistProfile.ejs', { therapist, user }); // ✅ Pass `user` to EJS
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
+module.exports.requestConsultation = async (req, res) => {
+    try {
+        const therapistId = req.params.id;
+        const patientId = req.user._id;
+
+        // Check if there's already a pending consultation
+        const existingConsultation = await Consultation.findOne({ patient: patientId, therapist: therapistId, status: "pending" });
+        if (existingConsultation) {
+            return res.status(400).send("You already have a pending request.");
+        }
+
+        // Create new consultation request
+        const consultation = new Consultation({ patient: patientId, therapist: therapistId });
+        await consultation.save();
+
+        res.redirect("/home");
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
+module.exports.renderTherapistDashboard = async (req, res) => {
+    try {
+        if (req.user.role !== "therapist") {
+            return res.status(403).send("Unauthorized");
+        }
+
+        const pendingConsultations = await Consultation.find({ therapist: req.user._id, status: "pending" }).populate("patient");
+        res.render("pages/therapistDashboard.ejs", { pendingConsultations });
     } catch (error) {
         console.error(error);
         res.status(500).send("Internal Server Error");

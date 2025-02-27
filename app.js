@@ -29,7 +29,7 @@ app.engine('ejs', engine);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-mongoose.connect('mongodb://127.0.0.1:27017/MYAPP')
+mongoose.connect('mongodb+srv://opvmro460:oQSi3PUnafrbOwQv@cluster0.57nzu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('MongoDB connection error:', err));
 
@@ -57,6 +57,7 @@ const postRoutes = require('./routes/postRoutes');
 const postCommentRoutes = require('./routes/postCommentRoutes');
 const therapistRoutes = require('./routes/therapistRoutes');
 const aiRoutes = require('./routes/aiRoutes');
+const consultationsRoutes = require('./routes/consultationRoutes');
 
 app.use("/", homeRouts);
 app.use("/users", userRouts);
@@ -64,6 +65,7 @@ app.use("/blogs", postRoutes);
 app.use('/comments', postCommentRoutes);
 app.use('/therapists', therapistRoutes);
 app.use("/ai", aiRoutes);
+app.use('/consultations',consultationsRoutes)
 
 io.on('connection', (socket) => {
     console.log('A user connected.');

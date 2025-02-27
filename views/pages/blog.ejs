@@ -1,7 +1,6 @@
 <% layout("/layouts/boilerplate") %>
 
 <style>
-    /* Background color for the whole page */
     :root{
         --primCol : rgb(210, 231, 229);
         --bgCol : rgb(151, 189, 210);
@@ -9,39 +8,45 @@
         --terCol: #54978B;
         --quadCol: #7de8d5;
     }
-    
+
     body {
-        background-color: var(--bgCol); 
+        background-color: var(--bgCol);
     }
 
-    /* Blog post styling */
     .card {
-        background-color: var(--primCol);
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        box-shadow: 2px 2px 10px rgba(64, 64, 64, 0.1);
-    }
+    background-color: var(--primCol);
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(64, 64, 64, 0.1);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 4px 6px 12px rgba(0, 0, 0, 0.3);
+}
+.card-body.trend {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
 
-    /* Links and titles */
-    .card-title {
+/* Hover effect */
+.card-body.trend:hover {
+    transform: translateY(-3px);
+    box-shadow: 3px 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+    .card-title, a {
         text-decoration: none;
         color: white;
     }
-    a {
-        text-decoration: none;
-        color: white;
-    }
 
-    /* Layout styling */
     .container {
-        width: 100%;  
-        max-width: 1520px; 
-        margin: auto; 
+        width: 100%;
+        max-width: 1520px;
+        margin: auto;
         display: flex;
         justify-content: space-around;
     }
 
-    /* Sidebar sections */
     .sidebar {
         width: 23%;
         background-color: var(--primCol);
@@ -55,42 +60,14 @@
 
     .blog-section {
         width: 48%;
-        height: 620px; 
-        overflow-y: auto; 
+        height: 620px;
+        overflow-y: auto;
         background-color: var(--primCol);
         padding: 15px;
         border-radius: 10px;
         box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
     }
 
-    .sidebar::-webkit-scrollbar, .blog-section::-webkit-scrollbar {
-        width: 8px;
-    }
-
-    .sidebar::-webkit-scrollbar-thumb, .blog-section::-webkit-scrollbar-thumb {
-        background: var(--SecCol);
-        border-radius: 10px;
-    }
-
-    .sidebar::-webkit-scrollbar-track, .blog-section::-webkit-scrollbar-track {
-        background: #f4f5f5;
-    }
-
-    /* Sidebar title */
-    .sidebar h4 {
-        font-size: 18px;
-        margin-bottom: 10px;
-        color: var(--SecCol);
-    }
-
-    /* Sidebar links */
-    .sidebar a {
-        display: block;
-        padding: 5px;
-        border-bottom: 1px solid #dddddd00;
-        transition: background 0.2s;
-    }
-    
     .card-body{
         border: 2px solid rgba(0, 0, 0, 0.147);
         border-radius: 10px;
@@ -102,49 +79,38 @@
         padding: 5px;
         margin: 5px;
     }
-    
 </style>
 
 <div class="container mt-1">
-    <!-- Trending Articles (Left Sidebar) -->
     <div class="sidebar">
         <h4>Trending Articles</h4>
         <hr>
-        <!-- logic for trending -->
         <% posts.sort((a, b) => b.likes - a.likes).forEach(post => { %>
             <div class="card-body trend mb-3">
                 <a href="/blogs/<%= post._id %>"><%= post.title %></a>
-                <p><%= post.content.substring(0, 20) %>...</p>
+                <p><%= post.content ? post.content.substring(0, 20) : 'No content available' %>...</p>
             </div>
         <% }) %>
-        
     </div>
 
-    <!-- Blog Center -->
     <div class="blog-section mt-1">
-        <!-- <a href="/blogs/new" class="btn btn-success mb-3">Write a New Post</a> -->
-
         <% posts.forEach(post => { %>
             <div class="card mb-3">
                 <div class="card-body">
                     <h3><a class="card-title" href="/blogs/<%= post._id %>"><%= post.title %></a></h3>
-                    <p><%= post.content.substring(0, 100) %>...</p>
-                    <p><small>Posted on: <%= post.createdAt.toDateString() %></small></p>
-
+                    <p><%= post.content ? post.content.substring(0, 100) : 'No content available' %>...</p>
+                    <p><small>Posted on: <%= post.createdAt ? post.createdAt.toDateString() : 'Unknown date' %></small></p>
                     <p>
-                        <!-- Like & Dislike Buttons -->
                         <form action="/blogs/<%= post._id %>/like" method="POST" style="display: inline;">
                             <button type="submit" class="btn btn-light " data-bs-toggle="tooltip" data-bs-placement="top" title="Like">
-                                <i class="fa-regular fa-thumbs-up"></i> <%= post.likes %>
+                                <i class="fa-regular fa-thumbs-up"></i> <%= post.likes || 0 %>
                             </button>
                         </form>
                         <button type="submit" class="btn btn-light mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Dislike">
-                            <i class="fa-regular fa-thumbs-down"></i> <%= post.dislikes %>
+                            <i class="fa-regular fa-thumbs-down"></i> <%= post.dislikes || 0 %>
                         </button>
-
-                        <!-- Comment Count -->
                         <a href="/blogs/<%= post._id %>" class="mx-2 " data-bs-toggle="tooltip" data-bs-placement="top" title="Comments">
-                            <i class="fa-regular fa-comment fa-lg"></i> <%= post.comments.length %>
+                            <i class="fa-regular fa-comment fa-lg"></i> <%= post.comments ? post.comments.length : 0 %>
                         </a>
                     </p>
                 </div>
@@ -153,10 +119,8 @@
         <% }) %>
     </div>
 
-    <!-- Recently Viewed Articles (Right Sidebar) -->
     <div class="sidebar">
         <h4>Recently Viewed</h4>
         <hr>
-        <!-- logic for recently Viewed -->
     </div>
 </div>

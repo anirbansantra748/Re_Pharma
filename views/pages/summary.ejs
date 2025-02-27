@@ -1,0 +1,133 @@
+<% ('/layouts/boilerplate') %> <!-- Include layout properly -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summarizer</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/css/styles.css">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 90%;
+            width: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h2 {
+            font-weight: bold;
+            font-size: 1.8rem;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            resize: vertical;
+            outline: none;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        button {
+            width: 100%;
+            background: linear-gradient(135deg, #ff7eb3, #ff5190);
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: linear-gradient(135deg, #ff5190, #ff7eb3);
+        }
+        .summary-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        /* Responsive Tweaks */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 20px;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            button {
+                font-size: 16px;
+            }
+        }
+        @media (max-width: 480px) {
+            textarea {
+                height: 120px;
+            }
+            button {
+                padding: 10px;
+                font-size: 14px;
+            }
+            .summary-box {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🌟 AI Blog Summary</h2>
+
+        <% if (summary) { %>
+            <div class="summary-box">
+                <h3>📝 Summary:</h3>
+                <p><%= summary %></p>
+            </div>
+        <% } %>
+
+        <% if (error) { %>
+            <p style="color: red; margin-top: 10px;">⚠ Something went wrong. Try again.</p>
+        <% } %>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+

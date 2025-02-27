@@ -1,1 +1,6 @@
 <a href="/users/chat/<%= therapist.user._id %>" class="btn btn-primary">Chat</a>
+<% if (user.role === "patient") { %>
+    <form action="/consultations/request/<%= therapist.user._id %>" method="POST">
+        <button type="submit" class="btn btn-primary">Request Consultation</button>
+    </form>
+<% } %>

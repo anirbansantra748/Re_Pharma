@@ -1,0 +1,10 @@
+<h3>Pending Consultation Requests</h3>
+<% pendingConsultations.forEach(consultation => { %>
+    <div>
+        <p>Patient: <%= consultation.patient.username %></p>
+        <form action="/consultations/schedule/<%= consultation._id %>" method="POST">
+            <input type="date" name="scheduledDate" required>
+            <button type="submit" class="btn btn-success">Schedule</button>
+        </form>
+    </div>
+<% }) %>
