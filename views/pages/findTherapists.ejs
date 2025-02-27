@@ -138,6 +138,7 @@
                 <% therapists.forEach(therapist => { %>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <div class="card shadow-sm p-3 mb-3 border-0">
+
     <div class="therapist-card">
     <div class="therapist-details">
         <h5 class="therapist-name">
@@ -158,6 +159,30 @@
                 </button>
             </form>
         </div>
+
+    <div class="d-flex align-items-center">
+        <div class="flex-grow-1">
+            <h5 class="mb-1">
+                <a href="/therapists/<%= therapist._id %>" class="text-decoration-none text-primary fw-bold">
+                    <%= therapist.user.username %>
+                </a>
+            </h5>
+            <p class="mb-1 text-muted">
+                <strong>Speciality:</strong> <%= therapist.specialization %>
+            </p>
+            <a href="/users/chat/<%= therapist.user._id %>" class="btn btn-primary">
+                <i class="fas fa-comment-alt"></i> Chat
+            </a>
+        </div>
+        <form action="/consultations/request/<%= therapist.user._id %>" method="POST">
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-user-md"></i> Request Consultation
+            </button>
+        </form>
+        <span class="<%= therapist.isVerified ? 'text-success' : 'text-danger' %> fw-bold">
+            <%= therapist.isVerified ? '✅ Verified' : '❌ Not Verified' %>
+        </span>
+
     </div>
     <span class="verification-status <%= therapist.isVerified ? 'text-success' : 'text-danger' %>">
         <%= therapist.isVerified ? '✅ Verified' : '❌ Not Verified' %>
