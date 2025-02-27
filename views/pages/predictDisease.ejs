@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" style="background-color: rgb(241 241 241);">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disease Prediction</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Disease Prediction</h1>
+
+        <h2>Heart Disease Prediction</h2>
+        <form action="/users/predict/heart-disease" method="POST">
+            <label>Age:</label>
+            <input type="number" name="age" required>
+
+            <label>Blood Pressure:</label>
+            <input type="number" name="bloodPressure" required>
+
+            <label>Cholesterol:</label>
+            <input type="number" name="cholesterol" required>
+
+            <button type="submit" class="btn btn-primary">Predict Heart Disease</button>
+        </form>
+
+        <h2>Diabetes Prediction</h2>
+        <form action="/users/predict/diabetes" method="POST">
+            <label>Glucose Level:</label>
+            <input type="number" name="glucose" required>
+
+            <label>Blood Pressure:</label>
+            <input type="number" name="bloodPressure" required>
+
+            <label>Insulin Level:</label>
+            <input type="number" name="insulin" required>
+
+            <button type="submit" class="btn btn-secondary">Predict Diabetes</button>
+        </form>
+
+        <% if (typeof prediction !== "undefined" && prediction !== null) { %>
+            <div id="result" class="result-box">
+                <p>Prediction Result: <%= prediction %></p>
+            </div>
+        <% } %>
+    </div>
+</body>
+</html>

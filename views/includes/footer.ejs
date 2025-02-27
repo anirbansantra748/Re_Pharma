@@ -1,71 +1,118 @@
 <style>
-  /* Footer Styles */
-    :root{
-        --primCol : #d2e7e5;
-        --SecCol : #248c9c;
-        --terCol: #54978B;
-        --quadCol: #7de8d5;
-    }
-.footer {
-    background-size: cover;
-    color: var(--SecCol);
-    padding: 40px 40px;
-    text-align: center;
-    position: relative;
+  .footer {
+  background-color: #183d3d;
+  color: white;
+  height: 200px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+  text-align: left;
+  overflow: hidden;
 }
 
-.footer-container {
-    background: var(--primCol);
-    padding: 10px;
-    border-radius: 10px;
-    width: 94vw;
-    height: 18vh;
-    margin-bottom: -25px;
+.footer-column {
+  flex: 1;
+  margin: 5px;
+  min-width: 150px;
+  font-size: 14px;
 }
 
-.footer-title {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 700;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+.footer-column h3,
+.footer-column h4 {
+  font-size: 16px;
+  margin-bottom: 8px;
 }
 
-.footer-links {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
+.footer a {
+  color: white;
+  text-decoration: none;
+  display: block;
+  font-size: 12px;
+  margin-bottom: 5px;
 }
 
-.footer-links li a {
-    color: var(--SecCol);
-    text-decoration: none;
-    font-size: 20px;
+.footer a:hover {
+  text-decoration: underline;
 }
 
-.footer-copy {
-    margin-top: 5px;
-    font-size: 0.8rem;
-    font-family: 'Roboto', sans-serif;
+.social-icons {
+  display: flex;
+  gap: 5px;
+  font-size: 14px;
+}
+
+.social-icons a {
+  color: white;
+}
+
+.footer-bottom {
+  position: absolute;
+  bottom: 3px;
+  width: 94%;
+  text-align: center;
+  font-size: 12px;
 }
 
 </style>
 
-
-
-<footer class="footer">
-    <div class="footer-container">
-        <h4 class="footer-title">Connect with Me</h4>
-        <ul class="footer-links">
-            <li><a href="mailto:"><i class="fas fa-envelope"></i></a></li>
-            <li><a href="tel:"><i class="fas fa-phone"></i></a></li>
-            <li><a href="#" target="_blank"><i class="fab fa-facebook"></i></a></li>
-            <li><a href="#" target="_blank"><i class="fab fa-linkedin"></i></a></li>
-            <li><a href="#" target="_blank"><i class="fab fa-instagram"></i></a></li>
-            <li><a href="https://github.com/anirbansantra748" target="_blank"><i class="fab fa-github"></i></a></li>
-        </ul>
-        <p class="footer-copy">&copy; 2024 Anirban Santra | All Rights Reserved</p>
+<footer class="footer mt-5">
+  <div class="footer-column">
+    <h3>Re-Pharma</h3>
+    <p>
+      Springs Behavioral Health provides high-quality Ai mental health services.
+    </p>
+    <div class="social-icons">
+      <a href="#"><i class="fab fa-facebook"></i></a>
+      <!-- Facebook Icon -->
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <!-- Twitter Icon -->
+      <a href="#"><i class="fab fa-linkedin"></i></a>
+      <!-- LinkedIn Icon -->
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <!-- Instagram Icon -->
     </div>
+  </div>
+  <div class="footer-column">
+    <h4>Product</h4>
+    <a href="#">Overview</a>
+    <a href="#">Features</a>
+    <a href="#">Tutorials</a>
+    <a href="#">Pricing</a>
+    <a href="#">Releases</a>
+  </div>
+  <div class="footer-column">
+    <h4>Company</h4>
+    <a href="#">About</a>
+    <a href="#">Press</a>
+    <a href="#">Careers</a>
+    <a href="#">Contact</a>
+    <a href="#">Partners</a>
+  </div>
+  <div class="footer-column">
+    <h4>Support</h4>
+    <a href="#">Help Center</a>
+    <a href="#">Terms of Service</a>
+    <a href="#">Legal</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Status</a>
+  </div>
+  <div class="footer-column">
+    <h4>Legal</h4>
+    <a href="#">Cookies Policy</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Service</a>
+    <a href="#">Law Enforcement</a>
+    <a href="#">Status</a>
+  </div>
+  <div class="footer-column">
+    <h4>Contact</h4>
+    <p>Email: contact@Re-Pharma.com</p>
+    <p>Phone: (607) 123-456</p>
+    <p>Location: 29 Oakham Road, Harborne, B17 9DQ</p>
+  </div>
+  <div class="footer-bottom ">
+    <p>&copy; 2025 Re-Pharma. All rights reserved.</p>
+  </div>
 </footer>

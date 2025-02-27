@@ -1,4 +1,5 @@
 const User = require('../models/userSchema')
+const axios = require('axios');
 const Therapist = require('../models/therapistSchema');
 const Consultation = require('../models/consultationSchema')
 //login
@@ -119,5 +120,154 @@ module.exports.renderChat = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).send("Internal Server Error");
+    }
+};
+
+module.exports.predictDesies = (req, res) => {
+    res.render('pages/predictDisease.ejs', { prediction: null });
+};
+
+
+// module.exports.predictHeartDisease = async (req, res) => {
+//     try {
+//         const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+//         const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+//         const userSymptoms = JSON.stringify(req.body);
+
+//         const prompt = `
+//             You are a medical AI assistant. Based on the given symptoms, assess the risk of heart disease.
+//             Respond with only one of the following: "Likelihood: High", "Likelihood: Medium", or "Likelihood: Low".
+//             Symptoms: ${userSymptoms}
+//         `;
+
+//         const response = await axios.post(GEMINI_API_URL, {
+//             contents: [{ role: "user", parts: [{ text: prompt }] }]
+//         });
+
+//         let prediction = response.data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "No result";
+
+//         // Ensure the output strictly matches expected values
+//         const validResponses = ["Likelihood: High", "Likelihood: Medium", "Likelihood: Low"];
+//         if (!validResponses.includes(prediction)) {
+//             prediction = "Likelihood: Unable to determine";
+//         }
+
+//         res.render("pages/predictDisease.ejs", { prediction });
+//     } catch (error) {
+//         console.error("Error predicting heart disease:", error.response?.data || error.message);
+//         res.render("pages/predictDisease.ejs", { prediction: "Error predicting heart disease" });
+//     }
+// };
+
+// module.exports.predictDiabetes = async (req, res) => {
+//     try {
+//         const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+//         const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+//         const userSymptoms = JSON.stringify(req.body);
+
+//         const prompt = `
+//             Given the following symptoms, assess the likelihood of diabetes.
+//             Symptoms: ${userSymptoms}
+//             Response format: "Likelihood: High/Medium/Low".
+
+//             Use the following logic:
+//             - High: If glucose level is above 180, insulin level is abnormal, or blood pressure is very high.
+//             - Medium: If glucose is between 140-180, moderate insulin imbalance, or slightly high blood pressure.
+//             - Low: If glucose is below 140 and vitals are mostly normal.
+//         `;
+
+//         const response = await axios.post(GEMINI_API_URL, {
+//             contents: [{ role: "user", parts: [{ text: prompt }] }]
+//         });
+
+//         const prediction = response.data.candidates?.[0]?.content?.parts?.[0]?.text || "No result";
+
+//         res.render("pages/predictDisease.ejs", { prediction });
+//     } catch (error) {
+//         console.error(error);
+//         res.render("pages/predictDisease.ejs", { prediction: "Error predicting diabetes" });
+//     }
+// };
+
+module.exports.predictHeartDisease = async (req, res) => {
+    try {
+        const { userId } = req.body;
+        const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+        const userSymptoms = JSON.stringify(req.body);
+
+        const prompt = `
+            You are a medical AI assistant. Based on the given symptoms, assess the risk of heart disease.
+            Respond with only one of the following: "Likelihood: High", "Likelihood: Medium", or "Likelihood: Low".
+            Symptoms: ${userSymptoms}
+        `;
+
+        const response = await axios.post(GEMINI_API_URL, {
+            contents: [{ role: "user", parts: [{ text: prompt }] }]
+        });
+
+        let prediction = response.data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "No result";
+        const validResponses = ["Likelihood: High", "Likelihood: Medium", "Likelihood: Low"];
+        if (!validResponses.includes(prediction)) {
+            prediction = "Likelihood: Unable to determine";
+        }
+
+        // Store in medicalRecords
+        const user = await User.findById(userId);
+        if (user) {
+            user.medicalRecords.push({
+                recordType: "Heart Disease",
+                heartDiseaseRisk: prediction.split(": ")[1] // Extract "High", "Medium", or "Low"
+            });
+            await user.save();
+        }
+
+        res.render("pages/predictDisease.ejs", { prediction });
+    } catch (error) {
+        console.error("Error predicting heart disease:", error.response?.data || error.message);
+        res.render("pages/predictDisease.ejs", { prediction: "Error predicting heart disease" });
+    }
+};
+
+module.exports.predictDiabetes = async (req, res) => {
+    try {
+        const { userId, sugarLevel } = req.body;
+        const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+        const prompt = `
+            Given the following symptoms, assess the likelihood of diabetes.
+            Symptoms: Sugar Level = ${sugarLevel}
+            Response format: "Likelihood: High/Medium/Low".
+        `;
+
+        const response = await axios.post(GEMINI_API_URL, {
+            contents: [{ role: "user", parts: [{ text: prompt }] }]
+        });
+
+        let prediction = response.data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "No result";
+        const validResponses = ["Likelihood: High", "Likelihood: Medium", "Likelihood: Low"];
+        if (!validResponses.includes(prediction)) {
+            prediction = "Likelihood: Unable to determine";
+        }
+
+        // Store in medicalRecords
+        const user = await User.findById(userId);
+        if (user) {
+            user.medicalRecords.push({
+                recordType: "Diabetes",
+                sugarLevel,
+                diabetesRisk: prediction.split(": ")[1] // Extract "High", "Medium", or "Low"
+            });
+            await user.save();
+        }
+
+        res.render("pages/predictDisease.ejs", { prediction });
+    } catch (error) {
+        console.error(error);
+        res.render("pages/predictDisease.ejs", { prediction: "Error predicting diabetes" });
     }
 };
