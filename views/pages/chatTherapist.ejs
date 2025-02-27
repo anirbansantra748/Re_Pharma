@@ -1,11 +1,117 @@
 <% layout("/layouts/boilerplate") %>
 
-<div id="chat-box" style="height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;"></div>
-<input type="text" id="message-input" placeholder="Type your message...">
-<button onclick="sendMessage()">Send</button>
-<button onclick="startCall()">Video Call</button>
+<style>
+    :root {
+        --primCol: rgb(210, 231, 229);
+        --bgCol: rgb(151, 189, 210);
+        --SecCol: #57b3cd;
+        --terCol: #54978b;
+        --quadCol: #7de8d5;
+    }
 
-<div id="video-call-container" style="display: none;">
+    body {
+        background-color: var(--bgCol);
+    }
+
+    .chat-header {
+        background: var(--SecCol);
+        color: white;
+        padding: 15px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .chat-container {
+        width: 80vw;
+        height: 600px;
+        background: var(--bgCol);
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+        left: 35px;
+    }
+
+    #chat-box {
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        background: var(--primCol);
+    }
+
+    .message {
+        padding: 8px 12px;
+        border-radius: 8px;
+        max-width: 70%;
+        word-wrap: break-word;
+    }
+    .user-message {
+        align-self: flex-end;
+        background: var(--quadCol);
+    }
+    .ai-message {
+        align-self: flex-start;
+        background: var(--SecCol);
+        color: white;
+    }
+
+    .chat-input {
+        display: flex;
+        border-top: 1px solid #ccc;
+        padding: 10px;
+        background: #f8f9fa;
+    }
+    #message-input {
+        flex: 1;
+        padding: 8px;
+        border: none;
+        border-radius: 5px;
+        outline: none;
+    }
+    #send-button, #video-call-button {
+        background: var(--SecCol);
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        margin-left: 8px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    #video-call-container {
+        display: none;
+        background: var(--primCol);
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    video {
+        width: 45%;
+        border-radius: 8px;
+        margin: 10px;
+    }
+</style>
+
+<div class="chat-container">
+    <div class="chat-header">Video Call Chat</div>
+    <div id="chat-box"></div>
+    <div class="chat-input">
+        <input type="text" id="message-input" placeholder="Type your message...">
+        <button id="send-button" onclick="sendMessage()">Send</button>
+        <button id="video-call-button" onclick="startCall()">Video Call</button>
+    </div>
+</div>
+
+<div id="video-call-container">
     <video id="local-video" autoplay playsinline></video>
     <video id="remote-video" autoplay playsinline></video>
 </div>
@@ -17,29 +123,24 @@
     const userId = "<%= user._id %>";
     const recipientId = "<%= recipient._id %>";
 
-    socket.on('connect', () => {
-        console.log("Connected to Socket.io server!");
-    });
-
-    socket.on('disconnect', () => {
-        console.log("Disconnected from Socket.io server!");
-    });
-
     function sendMessage() {
-        let message = document.getElementById('message-input').value;
-        if (message.trim() !== "") {
+        let messageInput = document.getElementById('message-input');
+        let message = messageInput.value.trim();
+        if (message) {
             socket.emit('chatMessage', { sender: userId, receiver: recipientId, message });
-            document.getElementById('message-input').value = '';
+            messageInput.value = '';
         }
     }
 
     socket.on('messageReceived', (data) => {
         let chatBox = document.getElementById('chat-box');
-        chatBox.innerHTML += `<p><strong>${data.sender}:</strong> ${data.message}</p>`;
+        let messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', data.sender === userId ? 'user-message' : 'ai-message');
+        messageDiv.innerHTML = `<strong>${data.sender === userId ? 'You' : 'Them'}:</strong> ${data.message}`;
+        chatBox.appendChild(messageDiv);
         chatBox.scrollTop = chatBox.scrollHeight;
     });
 
-    // Video Call Implementation
     const peer = new Peer(userId, { host: '/', port: 3000, path: '/peerjs' });
 
     function startCall() {
@@ -68,19 +169,11 @@
         });
     });
 
-    socket.on('incomingCall', (data) => {
-        if (confirm("You have an incoming video call. Accept?")) {
-            navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-                document.getElementById('local-video').srcObject = stream;
-                document.getElementById('video-call-container').style.display = "block";
-
-                const call = peer.call(data.from, stream);
-                call.on('stream', (remoteStream) => {
-                    document.getElementById('remote-video').srcObject = remoteStream;
-                });
-
-                socket.emit('answerCall', { to: data.from, signal: call });
-            });
+    document.getElementById("message-input").addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            sendMessage();
         }
     });
 </script>
+

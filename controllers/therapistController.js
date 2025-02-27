@@ -100,7 +100,7 @@ module.exports.renderChatPage = async (req, res) => {
 //     }
 // };
 
-module.exports.findTherapist = async (req, res) => {
+module.exports.findTherapistProfile = async (req, res) => {
     try {
         const therapist = await Therapist.findById(req.params.id).populate('user').lean();
         const user = req.user; // ✅ Use `req.user` to get the currently logged-in user
@@ -115,6 +115,23 @@ module.exports.findTherapist = async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 };
+
+// module.exports.findTherapists = async (req, res) => {
+//     try {
+//         const therapist = await Therapist.findById(req.params.id)
+//             .populate("user", "name") // Populate user's name
+//             .exec();
+
+//         if (!therapist) {
+//             return res.status(404).send("Therapist not found");
+//         }
+
+//         res.render("therapistProfile", { therapist, user: req.user });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// };
 
 module.exports.requestConsultation = async (req, res) => {
     try {

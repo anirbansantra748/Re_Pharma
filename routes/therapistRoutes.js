@@ -15,6 +15,6 @@ router.get('/verify', isLoggedIn, therapistController.renderVerificationPage);
 // Therapist Dashboard
 router.get('/dashboard', isLoggedIn, therapistController.renderTherapistDashboard);
 
-router.get('/:id', therapistController.findTherapist);
+router.get('/:id', therapistController.findTherapistProfile);
 
 module.exports = router;

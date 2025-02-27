@@ -28,6 +28,13 @@
         background-color: var(--bgCol);
         color: black;
     }
+    .card{
+        width: 100%;
+
+    }
+    .list-group-item{
+        background-color: #d8eaeb;
+    }
 </style>
 
 <title>Search Therapists</title>
@@ -73,17 +80,24 @@
             <ul class="list-group">
                 <% therapists.forEach(therapist => { %>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div class="sussy">
-                            <strong class="text-dark">
-                                <a href="/therapists/<%= therapist._id %>" class="text-decoration-none text-dark">
-                                    <%= therapist.user.username %>
-                                </a>
-                            </strong>
-                            <span class="text-dark"> - Speciality : <%= therapist.specialization %></span>
-                        </div>
-                        <span class="<%= therapist.isVerified ? 'text-success' : 'text-danger' %> fw-bold">
-                            <%= therapist.isVerified ? '✅ Verified' : '❌ Not Verified' %>
-                        </span>
+                        <div class="card shadow-sm p-3 mb-3 border-0">
+    <div class="d-flex align-items-center">
+        <div class="flex-grow-1">
+            <h5 class="mb-1">
+                <a href="/therapists/<%= therapist._id %>" class="text-decoration-none text-primary fw-bold">
+                    <%= therapist.user.username %>
+                </a>
+            </h5>
+            <p class="mb-1 text-muted">
+                <strong>Speciality:</strong> <%= therapist.specialization %>
+            </p>
+        </div>
+        <span class="<%= therapist.isVerified ? 'text-success' : 'text-danger' %> fw-bold">
+            <%= therapist.isVerified ? '✅ Verified' : '❌ Not Verified' %>
+        </span>
+    </div>
+</div>
+
                     </li>
                 <% }); %>
             </ul>

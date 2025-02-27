@@ -1,81 +1,105 @@
 <% layout("/layouts/boilerplate") %>
-<h1>profile</h1>
+<style>
+    body { background-color: #e8effc; }
+    .profile-card { background-color: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+    .left-card { background: #ffe6c4; border-radius: 12px; padding: 20px; text-align: center; }
+    .profile-img img { width: 120px; border: 5px solid white; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); }
+    .text-orange { color: #f57c00; font-weight: bold; }
+    .btn-warning { background-color: #f57c00; border: none; }
+    .btn-warning:hover { background-color: #d16b00; }
+    .info-section { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+    .info-section h3 { padding-bottom: 5px; margin-bottom: 10px; }
+</style>
+
 <body>
-    <div class="profile-container">
-        <h1>Profile</h1>
+    <div class="container mt-5">
+        <div class="profile-card p-4">
+            <div class="row">
+                <!-- Left Side -->
+                <div class="col-md-4 left-card">
+                    <div class="profile-img">
+                        <img src="<%= user.profilePicture %>" alt="Profile Picture" class="rounded-circle">
+                    </div>
+                    <h4 class="mt-3 fw-bold"><%= user.username %></h4>
+                    <p class="text-muted"><%= user.role %></p>
+                    <p><i class="fas fa-envelope text-warning"></i> <%= user.email %></p>
+                    <p><i class="fas fa-calendar-alt text-warning"></i> Joined on <%= new Date(user.createdAt).toDateString() %></p>
+                </div>
 
-        <div class="user-info">
-            <img src="<%= user.profilePicture %>" alt="Profile Picture" width="150">
-            <p><strong>Username:</strong> <%= user.username %></p>
-            <p><strong>Email:</strong> <%= user.email %></p>
-            <p><strong>Gender:</strong> <%= user.gender %></p>
-            <p><strong>Role:</strong> <%= user.role %></p>
-            <p><strong>Account Created:</strong> <%= new Date(user.createdAt).toDateString() %></p>
-        </div>
+                <!-- Right Side -->
+                <div class="col-md-8 right-card">
+                    <p class="text-orange">WELCOME</p>
+                    <h2 class="fw-bold text-primary"><%= user.username %></h2>
+                    <div class="info-section">
+                        <h3>Personal Details</h3>
+                        <p><strong>Gender:</strong> <%= user.gender %></p>
+                    </div>
 
-        <% if (user.role === "patient") { %>
-            <div class="patient-info">
-                <h2>Emergency Contacts</h2>
-                <% if (user.emergencyContacts.length > 0) { %>
-                    <ul>
-                        <% user.emergencyContacts.forEach(contact => { %>
-                            <li><strong><%= contact.name %>:</strong> <%= contact.phoneNumber %></li>
-                        <% }) %>
-                    </ul>
-                <% } else { %>
-                    <p>No emergency contacts added.</p>
-                <% } %>
+                    <% if (user.role === "patient") { %>
+                        <div class="info-section">
+                            <h3>Emergency Contacts</h3>
+                            <% if (user.emergencyContacts.length > 0) { %>
+                                <ul>
+                                    <% user.emergencyContacts.forEach(contact => { %>
+                                        <li><strong><%= contact.name %>:</strong> <%= contact.phoneNumber %></li>
+                                    <% }) %>
+                                </ul>
+                            <% } else { %>
+                                <p>No emergency contacts added.</p>
+                            <% } %>
+                        </div>
 
-                <h2>Medical Records</h2>
-                <% if (user.medicalRecords.length > 0) { %>
-                    <ul>
-                        <% user.medicalRecords.forEach(record => { %>
-                            <li><a href="<%= record %>" target="_blank">View Record</a></li>
-                        <% }) %>
-                    </ul>
-                <% } else { %>
-                    <p>No medical records available.</p>
-                <% } %>
-            </div>
-        <% } %>
-
-        <% if (therapist) { %>
-            <div class="therapist-info">
-                <h2>Therapist Information</h2>
-                <p><strong>Specialization:</strong> <%= therapist.specialization %></p>
-                <p><strong>Experience:</strong> <%= therapist.experience %> years</p>
-                <p><strong>Rating:</strong> <%= therapist.rating %> / 5</p>
-                <p><strong>Verified:</strong>
-                    <% if (therapist.isVerified) { %>
-                        ✅ Verified
-                    <% } else { %>
-                        ❌ Not Verified
+                        <div class="info-section">
+                            <h3>Medical Records</h3>
+                            <% if (user.medicalRecords.length > 0) { %>
+                                <ul>
+                                    <% user.medicalRecords.forEach(record => { %>
+                                        <li><a href="<%= record %>" target="_blank">View Record</a></li>
+                                    <% }) %>
+                                </ul>
+                            <% } else { %>
+                                <p>No medical records available.</p>
+                            <% } %>
+                        </div>
                     <% } %>
-                </p>
 
-                <h2>Verification Documents</h2>
-                <% if (therapist.verificationDocuments.length > 0) { %>
-                    <ul>
-                        <% therapist.verificationDocuments.forEach(doc => { %>
-                            <li><a href="<%= doc %>" target="_blank">View Document</a></li>
-                        <% }) %>
-                    </ul>
-                <% } else { %>
-                    <p>No verification documents uploaded.</p>
-                <% } %>
+                    <% if (therapist) { %>
+                        <div class="info-section">
+                            <h3>Therapist Information</h3>
+                            <p><strong>Specialization:</strong> <%= therapist.specialization %></p>
+                            <p><strong>Experience:</strong> <%= therapist.experience %> years</p>
+                            <p><strong>Rating:</strong> <%= therapist.rating %> / 5</p>
+                            <p><strong>Verified:</strong> <%= therapist.isVerified ? '✅ Verified' : '❌ Not Verified' %></p>
+                        </div>
 
-                <h2>Reviews</h2>
-                <% if (therapist.reviews.length > 0) { %>
-                    <ul>
-                        <% therapist.reviews.forEach(review => { %>
-                            <li><a href="/reviews/<%= review %>">View Review</a></li>
-                        <% }) %>
-                    </ul>
-                <% } else { %>
-                    <p>No reviews available.</p>
-                <% } %>
-                <a href="/therapists/chats">chat</a>
+                        <div class="info-section">
+                            <h3>Verification Documents</h3>
+                            <% if (therapist.verificationDocuments.length > 0) { %>
+                                <ul>
+                                    <% therapist.verificationDocuments.forEach(doc => { %>
+                                        <li><a href="<%= doc %>" target="_blank">View Document</a></li>
+                                    <% }) %>
+                                </ul>
+                            <% } else { %>
+                                <p>No verification documents uploaded.</p>
+                            <% } %>
+                        </div>
+
+                        <div class="info-section">
+                            <h3>Reviews</h3>
+                            <% if (therapist.reviews.length > 0) { %>
+                                <ul>
+                                    <% therapist.reviews.forEach(review => { %>
+                                        <li><a href="/reviews/<%= review %>">View Review</a></li>
+                                    <% }) %>
+                                </ul>
+                            <% } else { %>
+                                <p>No reviews available.</p>
+                            <% } %>
+                        </div>
+                    <% } %>
+                </div>
             </div>
-        <% } %>
+        </div>
     </div>
 </body>
