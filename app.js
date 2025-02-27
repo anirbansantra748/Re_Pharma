@@ -57,6 +57,7 @@ const postRoutes = require('./routes/postRoutes');
 const postCommentRoutes = require('./routes/postCommentRoutes');
 const therapistRoutes = require('./routes/therapistRoutes');
 const aiRoutes = require('./routes/aiRoutes');
+const consultationsRoutes = require('./routes/consultationRoutes');
 
 app.use("/", homeRouts);
 app.use("/users", userRouts);
@@ -64,6 +65,7 @@ app.use("/blogs", postRoutes);
 app.use('/comments', postCommentRoutes);
 app.use('/therapists', therapistRoutes);
 app.use("/ai", aiRoutes);
+app.use('/consultations',consultationsRoutes)
 
 io.on('connection', (socket) => {
     console.log('A user connected.');

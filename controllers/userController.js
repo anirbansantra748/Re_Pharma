@@ -1,5 +1,6 @@
 const User = require('../models/userSchema')
 const Therapist = require('../models/therapistSchema');
+const Consultation = require('../models/consultationSchema')
 //login
 module.exports.renderLogin = (req, res) => {
     res.render('users/login.ejs');
@@ -77,17 +78,46 @@ module.exports.renderProfile = async (req, res) => {
     }
 };
 
+// module.exports.renderChat = async (req, res) => {
+//     try {
+//         const recipient = await User.findById(req.params.id).lean();
+
+//         if (!recipient) {
+//             return res.status(404).send("User not found");
+//         }
+
+//         res.render('pages/chatTherapist.ejs', { recipient, user: req.user });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// }
+
 module.exports.renderChat = async (req, res) => {
     try {
-        const recipient = await User.findById(req.params.id).lean();
+        const therapistId = req.params.id;
+        const patientId = req.user._id;
 
-        if (!recipient) {
-            return res.status(404).send("User not found");
-        }
+        // Find a scheduled consultation for today
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
-        res.render('pages/chatTherapist.ejs', { recipient, user: req.user });
+        const consultation = await Consultation.findOne({
+            patient: patientId,
+            therapist: therapistId,
+            status: "scheduled",
+            scheduledDate: { $eq: today }
+        });
+
+        // if (!consultation) {
+        //     return res.status(403).send("Chat is only available on the consultation day.");
+        // }
+
+        // Proceed to chat if allowed
+        const recipient = await User.findById(therapistId).lean();
+        res.render("pages/chatTherapist.ejs", { recipient, user: req.user });
     } catch (error) {
         console.error(error);
         res.status(500).send("Internal Server Error");
     }
-}
+};

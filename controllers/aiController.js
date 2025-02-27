@@ -17,7 +17,7 @@ module.exports.summarizeBlog = async (req, res) => {
 
         const summary = response.data?.candidates?.[0]?.content?.parts?.[0]?.text || "No summary available";
 
-        res.json({ summary });
+        res.render('pages/summary',{summary,error:false})
     } catch (error) {
         console.error("Summarization error:", error.response?.data || error.message);
         res.status(500).json({ error: "Error summarizing blog" });

@@ -1,13 +1,11 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const consultationSchema = new mongoose.Schema({
-    patient: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    therapist: { type: mongoose.Schema.Types.ObjectId, ref: 'Therapist', required: true },
-    date: { type: Date, required: true },
-    prescription: { type: String }, // E-prescription link or text
-    report: { type: String }, // Report link if any
-    followUp: { type: Boolean, default: false }, // Flag for follow-ups
-    createdAt: { type: Date, default: Date.now },
+    patient: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    therapist: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    status: { type: String, enum: ["pending", "scheduled", "completed", "rejected"], default: "pending" },
+    scheduledDate: { type: Date }, // Date assigned by therapist
+    createdAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Consultation', consultationSchema);
+module.exports = mongoose.model("Consultation", consultationSchema);
