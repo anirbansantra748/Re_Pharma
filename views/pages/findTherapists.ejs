@@ -35,6 +35,63 @@
     .list-group-item{
         background-color: #d8eaeb;
     }
+    .therapist-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+    .therapist-details {
+        flex-grow: 1;
+    }
+
+    .therapist-name a {
+        font-size: 18px;
+        font-weight: bold;
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .therapist-name a:hover {
+        text-decoration: underline;
+    }
+
+    .therapist-specialty {
+        font-size: 14px;
+        color: #6c757d;
+        margin-bottom: 10px;
+    }
+
+    .therapist-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-primary, .btn-success {
+        padding: 8px 12px;
+        font-size: 14px;
+        border-radius: 6px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+    }
+
+    .verification-status {
+        font-weight: bold;
+        font-size: 14px;
+    }
 </style>
 
 <title>Search Therapists</title>
@@ -81,21 +138,31 @@
                 <% therapists.forEach(therapist => { %>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <div class="card shadow-sm p-3 mb-3 border-0">
-    <div class="d-flex align-items-center">
-        <div class="flex-grow-1">
-            <h5 class="mb-1">
-                <a href="/therapists/<%= therapist._id %>" class="text-decoration-none text-primary fw-bold">
-                    <%= therapist.user.username %>
-                </a>
-            </h5>
-            <p class="mb-1 text-muted">
-                <strong>Speciality:</strong> <%= therapist.specialization %>
-            </p>
+    <div class="therapist-card">
+    <div class="therapist-details">
+        <h5 class="therapist-name">
+            <a href="/therapists/<%= therapist._id %>">
+                <%= therapist.user.username %>
+            </a>
+        </h5>
+        <p class="therapist-specialty">
+            <strong>Specialty:</strong> <%= therapist.specialization %>
+        </p>
+        <div class="therapist-actions">
+            <a href="/users/chat/<%= therapist.user._id %>" class="btn btn-primary">
+                <i class="fas fa-comment-alt"></i> Chat
+            </a>
+            <form action="/consultations/request/<%= therapist.user._id %>" method="POST">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-user-md"></i> Request Consultation
+                </button>
+            </form>
         </div>
-        <span class="<%= therapist.isVerified ? 'text-success' : 'text-danger' %> fw-bold">
-            <%= therapist.isVerified ? '✅ Verified' : '❌ Not Verified' %>
-        </span>
     </div>
+    <span class="verification-status <%= therapist.isVerified ? 'text-success' : 'text-danger' %>">
+        <%= therapist.isVerified ? '✅ Verified' : '❌ Not Verified' %>
+    </span>
+</div>
 </div>
 
                     </li>

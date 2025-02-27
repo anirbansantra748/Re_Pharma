@@ -1,4 +1,5 @@
 <% layout("/layouts/boilerplate") %>
+
 <style>
     body { background-color: #e8effc; }
     .profile-card { background-color: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
@@ -9,6 +10,7 @@
     .btn-warning:hover { background-color: #d16b00; }
     .info-section { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
     .info-section h3 { padding-bottom: 5px; margin-bottom: 10px; }
+    .chart-container { width: 100%; height: 300px; }
 </style>
 
 <body>
@@ -30,6 +32,7 @@
                 <div class="col-md-8 right-card">
                     <p class="text-orange">WELCOME</p>
                     <h2 class="fw-bold text-primary"><%= user.username %></h2>
+                    
                     <div class="info-section">
                         <h3>Personal Details</h3>
                         <p><strong>Gender:</strong> <%= user.gender %></p>
@@ -50,16 +53,38 @@
                         </div>
 
                         <div class="info-section">
-                            <h3>Medical Records</h3>
-                            <% if (user.medicalRecords.length > 0) { %>
-                                <ul>
-                                    <% user.medicalRecords.forEach(record => { %>
-                                        <li><a href="<%= record %>" target="_blank">View Record</a></li>
-                                    <% }) %>
-                                </ul>
-                            <% } else { %>
-                                <p>No medical records available.</p>
-                            <% } %>
+                            <h3>Medical Necessities</h3>
+                            <form action="/update-medical-info" method="POST">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Height (cm):</label>
+                                        <input type="number" name="height" class="form-control" value="176" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Weight (kg):</label>
+                                        <input type="number" name="weight" class="form-control" value="60" required>
+                                    </div>
+                                    <div class="col-md-6 mt-2">
+                                        <label>Blood Pressure:</label>
+                                        <input type="text" name="bp" class="form-control" value="120" required>
+                                    </div>
+                                    <div class="col-md-6 mt-2">
+                                        <label>BMI:</label>
+                                        <input type="number" name="bmi" class="form-control" value="18" required>
+                                    </div>
+                                    <div class="col-md-6 mt-2">
+                                        <label>Sugar Level:</label>
+                                        <input type="number" name="sugar" class="form-control" value="86" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-warning mt-3">Update Info</button>
+                            </form>
+                        </div>
+
+                        <!-- Dashboard Graph -->
+                        <div class="info-section">
+                            <h3>Health Dashboard</h3>
+                            <canvas id="healthChart" class="chart-container"></canvas>
                         </div>
                     <% } %>
 
@@ -102,4 +127,30 @@
             </div>
         </div>
     </div>
+
+    <!-- Chart.js for graphical representation -->
+     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let ctx = document.getElementById("healthChart").getContext("2d");
+            let healthChart = new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: ["Height", "Weight", "BP", "BMI", "Sugar"],
+                    datasets: [{
+                        label: "Patient Health Metrics",
+                        data: [176, 60, 120, 18, 86], // Placeholder values
+                        backgroundColor: ["#3498db", "#2ecc71", "#e74c3c", "#f1c40f", "#9b59b6"]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        });
+    </script>
+    
 </body>

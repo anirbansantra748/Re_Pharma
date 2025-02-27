@@ -11,8 +11,7 @@
     />
     <link rel="stylesheet" href="styles.css" />
     <style>
-      body {
-        font-family: Arial, sans-serif;
+      body {     
         margin: 0;
         padding: 0;
         text-align: center;
@@ -167,8 +166,9 @@
           Your privacy is our priority. Get the support you need without
           revealing your identity.
         </p>
-        <button class="btn">Get Started</button>
+        <button class="btn" id="scrollButton">Get Started</button>
       </header>
+      <!-- <section id="scrollTarget" style="height: 100vh;"></section> -->
 
       <section class="features">
         <h2>Features</h2>
@@ -244,10 +244,7 @@
           </p>
           <div class="service-box">
             <h3>Affordable sessions</h3>
-            <p>
-              Re-Pharma clients who use their insurance save an average of 77%
-              on the cost of therapy.
-            </p>
+            
           </div>
           <div class="service-box">
             <h3>Simple search process</h3>
@@ -263,24 +260,30 @@
         <div class="service-cards">
           <div class="service-card">
             <div class="icon">&#128100;</div>
-            <h3>Individual Counselling</h3>
-            <p>For myself</p>
-            <a href="#">→</a>
+            
+            
+            <a style="text-decoration: none;color: black;" href="/users/login" target="_blank"><h3>Individual Counselling</h3></a>
           </div>
           <div class="service-card">
             <div class="icon">&#128106;</div>
-            <h3>Couple Counselling</h3>
-            <p>For me or my partner</p>
-            <a href="#">→</a>
+            
+            <a style="text-decoration: none;color: black;" href="/ai/chat" target="_blank"><h3>AI Counselling</h3></a>
           </div>
           <div class="service-card">
             <div class="icon">&#128101;</div>
-            <h3>Family Counselling</h3>
-            <p>For my family member</p>
-            <a href="#">→</a>
+            
+            <a style="text-decoration: none;color: black;" href="/therapists/search" target="_blank"><h3>Health Diagonosis</h3></a>
           </div>
         </div>
       </section>
     </div>
   </body>
+  <script>
+  document.getElementById("scrollButton").addEventListener("click", function () {
+    window.scrollBy({
+      top: window.innerHeight / 2, // Scroll down by half the viewport height
+      behavior: "smooth"
+    });
+  });
+</script>
 </html>

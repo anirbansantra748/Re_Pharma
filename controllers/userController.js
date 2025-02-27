@@ -9,41 +9,66 @@ module.exports.renderLogin = (req, res) => {
 
 //register postrout
 module.exports.registerUser = async (req, res) => {
-    try {
-        const { username, email, password, gender, role, specialization, experience } = req.body;
+	try {
+		const {
+			username,
+			email,
+			password,
+			gender,
+			role,
+			specialization,
+			experience,
+			emergencyContacts,
+		} = req.body;
 
-        // Check if user already exists
-        let existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).send("Email already exists!");
-        }
+		// Check if user already exists
+		let existingUser = await User.findOne({ email });
+		if (existingUser) {
+			return res.status(400).send("Email already exists!");
+		}
 
-        // Create new User
-        const newUser = new User({ username, email, gender, role });
+		// Parse emergency contacts if provided
+		let parsedEmergencyContacts = [];
+		if (emergencyContacts && Array.isArray(emergencyContacts)) {
+			parsedEmergencyContacts = emergencyContacts.map((contact) => ({
+				name: contact.name,
+				phoneNumber: contact.phoneNumber,
+			}));
+		}
 
-        // Register user with Passport
-        const registeredUser = await User.register(newUser, password);
+		// Create new User
+		const newUser = new User({
+			username,
+			email,
+			gender,
+			role,
+			emergencyContacts: parsedEmergencyContacts, // Store emergency contacts
+		});
 
-        // If user selects 'therapist', create Therapist profile
-        if (role === "therapist") {
-            const newTherapist = new Therapist({
-                user: registeredUser._id, // Link to user
-                specialization,
-                experience,
-            });
-            await newTherapist.save();
+		// Register user with Passport
+		const registeredUser = await User.register(newUser, password);
 
-            // Update User schema to reference therapist profile
-            registeredUser.therapistProfile = newTherapist._id;
-            await registeredUser.save();
-        }
+		// If user is a therapist, create Therapist profile
+		if (role === "therapist") {
+			const newTherapist = new Therapist({
+				user: registeredUser._id,
+				specialization,
+				experience,
+			});
+			await newTherapist.save();
 
-        res.redirect('/home'); // Redirect to login page after successful signup
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-    }
+			// Link therapist profile to the user
+			registeredUser.therapistProfile = newTherapist._id;
+			await registeredUser.save();
+		}
+
+		res.redirect("/home"); // Redirect to home or login page
+	} catch (error) {
+		console.error(error);
+		res.status(500).send("Internal Server Error");
+	}
 };
+
 
 //register
 module.exports.renderRegister = (req,res)=>{
@@ -60,24 +85,27 @@ module.exports.logoutUser = (req, res, next) => {
 
 //profile
 module.exports.renderProfile = async (req, res) => {
-    try {
-        const user = await User.findById(req.user._id).lean();
+	try {
+		const user = await User.findById(req.user._id).lean();
 
-        if (!user) {
-            return res.status(404).send("User not found");
-        }
+		if (!user) {
+			return res.status(404).send("User not found");
+		}
 
-        if (user.role === "therapist") {
-            const therapist = await Therapist.findOne({ user: user._id }).lean();
-            return res.render("pages/profile.ejs", { user, therapist });
-        }
+		let therapist = null;
+		if (user.role === "therapist") {
+			therapist = await Therapist.findOne({ user: user._id }).lean();
+		}
 
-        res.render("pages/profile.ejs", { user, therapist: null });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-    }
+		const searchQuery = req.query || {}; // Ensure searchQuery is always passed
+
+		res.render("pages/profile.ejs", { user, therapist, searchQuery });
+	} catch (error) {
+		console.error(error);
+		res.status(500).send("Internal Server Error");
+	}
 };
+
 
 // module.exports.renderChat = async (req, res) => {
 //     try {
