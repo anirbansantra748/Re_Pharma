@@ -1,0 +1,55 @@
+<% layout('layouts/boilerplate') %>
+<style>
+    :root{
+        --primCol : rgb(210, 231, 229);
+        --SecCol : #003F53;
+        --terCol: #54978B;
+        --quadCol: #7de8d5;
+    }
+
+    .login-container {
+        max-width: 400px;
+        margin: 50px auto;
+        background-color: var(--SecCol);
+        padding: 30px;
+        border-radius: 10px;
+        color: var(--primCol) !important;
+    }
+    
+    .input-dark {
+        background-color: #b8babb; /* Dark mode field */
+        color: white !important;
+    }
+    
+    .input-dark:focus {
+        background-color: #333 !important;
+        color: white !important;
+        border-color: var(--terCol) !important;
+        
+    }
+    a{
+        text-decoration: none;
+    }
+    .btn-danger{
+        color: var(--SecCol) !important;
+        background-color: var(--quadCol) !important;
+        border-color: var(--terCol) !important;
+
+    }
+</style>
+
+<div class="login-container">
+    <h2 class="text-center">Log In</h2>
+    <form action="/users/login" method="POST">
+        <div class="mb-3">
+            <label for="username" class="form-label">Username:</label>
+            <input type="text" id="username" name="username" class="form-control input-dark" placeholder="Enter your username" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password:</label>
+            <input type="password" id="password" name="password" class="form-control input-dark" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="btn btn-danger w-100">Log In</button>
+        <a href="/register" class="d-block text-center text-warning mt-3">Sign Up</a>
+    </form>
+</div>

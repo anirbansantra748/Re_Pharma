@@ -1,0 +1,81 @@
+<% layout("/layouts/boilerplate") %>
+<h1>profile</h1>
+<body>
+    <div class="profile-container">
+        <h1>Profile</h1>
+
+        <div class="user-info">
+            <img src="<%= user.profilePicture %>" alt="Profile Picture" width="150">
+            <p><strong>Username:</strong> <%= user.username %></p>
+            <p><strong>Email:</strong> <%= user.email %></p>
+            <p><strong>Gender:</strong> <%= user.gender %></p>
+            <p><strong>Role:</strong> <%= user.role %></p>
+            <p><strong>Account Created:</strong> <%= new Date(user.createdAt).toDateString() %></p>
+        </div>
+
+        <% if (user.role === "patient") { %>
+            <div class="patient-info">
+                <h2>Emergency Contacts</h2>
+                <% if (user.emergencyContacts.length > 0) { %>
+                    <ul>
+                        <% user.emergencyContacts.forEach(contact => { %>
+                            <li><strong><%= contact.name %>:</strong> <%= contact.phoneNumber %></li>
+                        <% }) %>
+                    </ul>
+                <% } else { %>
+                    <p>No emergency contacts added.</p>
+                <% } %>
+
+                <h2>Medical Records</h2>
+                <% if (user.medicalRecords.length > 0) { %>
+                    <ul>
+                        <% user.medicalRecords.forEach(record => { %>
+                            <li><a href="<%= record %>" target="_blank">View Record</a></li>
+                        <% }) %>
+                    </ul>
+                <% } else { %>
+                    <p>No medical records available.</p>
+                <% } %>
+            </div>
+        <% } %>
+
+        <% if (therapist) { %>
+            <div class="therapist-info">
+                <h2>Therapist Information</h2>
+                <p><strong>Specialization:</strong> <%= therapist.specialization %></p>
+                <p><strong>Experience:</strong> <%= therapist.experience %> years</p>
+                <p><strong>Rating:</strong> <%= therapist.rating %> / 5</p>
+                <p><strong>Verified:</strong>
+                    <% if (therapist.isVerified) { %>
+                        ✅ Verified
+                    <% } else { %>
+                        ❌ Not Verified
+                    <% } %>
+                </p>
+
+                <h2>Verification Documents</h2>
+                <% if (therapist.verificationDocuments.length > 0) { %>
+                    <ul>
+                        <% therapist.verificationDocuments.forEach(doc => { %>
+                            <li><a href="<%= doc %>" target="_blank">View Document</a></li>
+                        <% }) %>
+                    </ul>
+                <% } else { %>
+                    <p>No verification documents uploaded.</p>
+                <% } %>
+
+                <h2>Reviews</h2>
+                <% if (therapist.reviews.length > 0) { %>
+                    <ul>
+                        <% therapist.reviews.forEach(review => { %>
+                            <li><a href="/reviews/<%= review %>">View Review</a></li>
+                        <% }) %>
+                    </ul>
+                <% } else { %>
+                    <p>No reviews available.</p>
+                <% } %>
+                <a href="/therapists/chats">chat</a>
+            </div>
+        <% } %>
+    </div>
+</body>

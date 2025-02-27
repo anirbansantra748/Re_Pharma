@@ -1,0 +1,71 @@
+<style>
+  /* Footer Styles */
+    :root{
+        --primCol : #d2e7e5;
+        --SecCol : #248c9c;
+        --terCol: #54978B;
+        --quadCol: #7de8d5;
+    }
+.footer {
+    background-size: cover;
+    color: var(--SecCol);
+    padding: 40px 40px;
+    text-align: center;
+    position: relative;
+}
+
+.footer-container {
+    background: var(--primCol);
+    padding: 10px;
+    border-radius: 10px;
+    width: 94vw;
+    height: 18vh;
+    margin-bottom: -25px;
+}
+
+.footer-title {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.footer-links li a {
+    color: var(--SecCol);
+    text-decoration: none;
+    font-size: 20px;
+}
+
+.footer-copy {
+    margin-top: 5px;
+    font-size: 0.8rem;
+    font-family: 'Roboto', sans-serif;
+}
+
+</style>
+
+
+
+<footer class="footer">
+    <div class="footer-container">
+        <h4 class="footer-title">Connect with Me</h4>
+        <ul class="footer-links">
+            <li><a href="mailto:"><i class="fas fa-envelope"></i></a></li>
+            <li><a href="tel:"><i class="fas fa-phone"></i></a></li>
+            <li><a href="#" target="_blank"><i class="fab fa-facebook"></i></a></li>
+            <li><a href="#" target="_blank"><i class="fab fa-linkedin"></i></a></li>
+            <li><a href="#" target="_blank"><i class="fab fa-instagram"></i></a></li>
+            <li><a href="https://github.com/anirbansantra748" target="_blank"><i class="fab fa-github"></i></a></li>
+        </ul>
+        <p class="footer-copy">&copy; 2024 Anirban Santra | All Rights Reserved</p>
+    </div>
+</footer>

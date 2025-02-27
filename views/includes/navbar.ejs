@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>NightSky</title>
+		<!-- Include Bootstrap CSS -->
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+			rel="stylesheet" />
+		<!-- Include Font Awesome for icons -->
+		<link
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+			rel="stylesheet" />
+		<style>
+			:root {
+				--primCol: rgb(210, 231, 229);
+				--SecCol: #003f53;
+				--terCol: #54978b;
+				--quadCol: #7de8d5;
+			}
+			/* Ensure dropdown appears on hover */
+			.nav-item.dropdown:hover .dropdown-menu {
+				display: block;
+				background-color: var(--primCol);
+			}
+
+			/* Notifications popup styling */
+			.notifications-container {
+				position: absolute;
+				top: 100%;
+				right: 0;
+				width: 300px;
+				background-color: var(--primCol);
+				box-shadow: 0px 4px 8px rgba(0, 40, 68, 0.2);
+				border-radius: 8px;
+				padding: 10px;
+				display: none;
+				z-index: 1000;
+			}
+
+			/* Notification item styling */
+			.notification-item {
+				padding: 8px;
+				opacity: 0.6;
+				border-bottom: 1px solid #54978b;
+				border-radius: 10px;
+				box-shadow: 0px 4px 8px rgba(0, 40, 68, 0.2);
+			}
+
+			.notification-item:hover {
+				opacity: 1;
+				cursor: pointer;
+			}
+			nav a {
+				color: var(--SecCol) !important;
+			}
+
+			/* Hover effect for dropdown items */
+			.dropdown-menu .dropdown-item {
+				transition: background-color 0.2s ease, color 0.3s ease; /* Smooth transition */
+			}
+
+			.dropdown-menu{
+				background-color: var(--terCol); /* Uses the theme's tertiary color */
+
+			}
+			.dropdown-item:hover {
+				background-color: var(--terCol); /* Uses the theme's tertiary color */
+				color: white !important;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- Navbar -->
+		<nav
+			class="navbar navbar-expand-lg sticky-top"
+			style="background-color: #d2e7e5">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="/home">
+					<i class="fa-solid fa-mortar-pestle"></i> Re:Pharma
+				</a>
+				<button
+					class="navbar-toggler"
+					type="button"
+					data-bs-toggle="collapse"
+					data-bs-target="#navbarNavAltMarkup">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+					<div class="navbar-nav ms-auto">
+						<a class="nav-link" href="/Home"
+							><i class="fa-solid fa-house"></i> Home</a
+						>
+						<a class="nav-link" href="/booking"
+							><i class="fa-solid fa-book"></i> Consultation</a
+						>
+
+						<!-- Ask AI Dropdown -->
+						<div class="nav-item dropdown">
+							<a
+								class="nav-link dropdown-toggle"
+								href="#"
+								id="askAiDropdown"
+								role="button">
+								<i class="fa-solid fa-comment"></i> Ask AI
+							</a>
+							<div class="ai-dropdown">
+								<ul
+									class="dropdown-menu"
+									aria-labelledby="askAiDropdown">
+									<li>
+										<a class="dropdown-item" href="/ai/chat"
+											>General AI Chat</a
+										>
+									</li>
+									<li>
+										<a
+											class="dropdown-item"
+											href="/aibot/medical"
+											>Medical Advice</a
+										>
+									</li>
+									<li>
+										<a
+											class="dropdown-item"
+											href="/aibot/symptoms"
+											>Symptom Checker</a
+										>
+									</li>
+									<li>
+										<a
+											class="dropdown-item"
+											href="/aibot/prescription"
+											>Prescription Checker</a
+										>
+									</li>
+									<li>
+										<a
+											class="dropdown-item"
+											href="/aibot/search"
+											>Search Articles</a
+										>
+									</li>
+									<li>
+										<a
+											class="dropdown-item"
+											href="/aibot/coach"
+											>Health Coach</a
+										>
+									</li>
+								</ul>
+							</div>
+						</div>
+
+						<a class="nav-link" href="/blogs"
+							><i class="fa-solid fa-newspaper"></i> Blogs</a
+						>
+						<a class="nav-link" href="/blogs/new"
+							><i class="fa-solid fa-plus"></i> Create Post</a
+						>
+
+						<!-- Notifications Dropdown -->
+						<div
+							class="nav-item notifications-dropdown position-relative">
+							<a class="nav-link" href="#" id="notificationsIcon">
+								<i class="fa-solid fa-bell"></i> Notifications
+							</a>
+							<div
+								class="notifications-container"
+								id="notificationsContainer">
+								<div class="notification-item">
+									New comment on your post
+								</div>
+								<div class="notification-item">
+									Doctor replied to your question
+								</div>
+								<div class="notification-item">
+									You have a new chat request
+								</div>
+								<div class="notification-item">
+									Your article was approved
+								</div>
+							</div>
+						</div>
+
+						<div class="nav-item dropdown">
+							<a
+								class="nav-link dropdown-toggle"
+								href="#"
+								id="therapistDropdown"
+								role="button">
+								<i class="fa-solid fa-user-md"></i> Therapists
+							</a>
+							<div class="ai-dropdown">
+								<ul
+									class="dropdown-menu"
+									aria-labelledby="therapistDropdown">
+									<li>
+										<a
+											class="nav-link dropdown-item"
+											href="/therapists/search"
+											><i
+												class="fa-solid fa-magnifying-glass"></i>
+											Find Therapists</a
+										>
+									</li>
+									<li>
+										<a
+											class="nav-link dropdown-item"
+											href="/therapists/verify"
+											><i
+												class="fa-solid fa-certificate"></i>
+											Therapist verification</a
+										>
+									</li>
+								</ul>
+							</div>
+						</div>
+
+						<a class="nav-link" href="/users/profile"
+							><i class="fa-solid fa-user"></i> Profile</a
+						>
+						<a class="nav-link" href="/settings"
+							><i class="fa-solid fa-gear"></i> Settings</a
+						>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<!-- Include Bootstrap JS -->
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+		<!-- Include Font Awesome -->
+		<script
+			src="https://kit.fontawesome.com/a076d05399.js"
+			crossorigin="anonymous"></script>
+	</body>
+</html>

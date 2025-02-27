@@ -1,0 +1,43 @@
+<% layout('layouts/boilerplate') %>
+
+<body style="color: #ffffff; font-family: Arial, sans-serif;">
+    <div style="max-width: 500px; margin: 50px auto; background-color: rgba(0, 0, 0, 0.8); padding: 30px; border-radius: 10px;">
+        <h2 style="text-align: center; color: #ffda79;">Therapist Verification</h2>
+
+        <% if (therapist.isVerified) { %>
+            <p style="color: green; text-align: center;">✅ Your account is verified as a therapist.</p>
+        <% } else { %>
+            <p style="color: red; text-align: center;">⚠️ Your account is not verified. Submit your verification links below.</p>
+
+            <form action="/therapists/submit-verification" method="POST">
+                <div id="linkInputs">
+                    <div style="margin-bottom: 15px;">
+                        <label for="verificationLinks">Enter Document Link:</label>
+                        <input type="url" name="verificationLinks" required>
+                    </div>
+                </div>
+
+                <button type="button" onclick="addLinkField()">+ Add More Links</button>
+                <button type="submit">Submit Verification</button>
+            </form>
+        <% } %>
+
+        <% if (therapist.verificationDocuments.length > 0) { %>
+            <h3 style="text-align: center; color: #ffda79;">Uploaded Links</h3>
+            <ul>
+                <% therapist.verificationDocuments.forEach(link => { %>
+                    <li><a href="<%= link %>" target="_blank" style="color: #ffda79;"><%= link %></a></li>
+                <% }); %>
+            </ul>
+        <% } %>
+    </div>
+
+    <script>
+        function addLinkField() {
+            let container = document.getElementById("linkInputs");
+            let input = document.createElement("div");
+            input.innerHTML = '<div style="margin-bottom: 15px;"><input type="url" name="verificationLinks" required></div>';
+            container.appendChild(input);
+        }
+    </script>
+</body>

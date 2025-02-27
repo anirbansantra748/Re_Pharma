@@ -1,0 +1,105 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+    :root {
+        --primCol: rgb(210, 231, 229);
+        --bgCol: rgb(151, 189, 210);
+        --SecCol: #003F53;
+        --terCol: #54978B;
+        --quadCol: #7de8d5;
+    }
+
+    body {
+        background-color: var(--bgCol);
+    }
+
+    .post-container, .comments {
+        background-color: var(--SecCol);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-container {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .comment-box {
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .like-btn, .dislike-btn {
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-edit {
+        background-color: var(--SecCol);
+        color: white;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-edit:hover {
+        background-color: var(--primCol);
+        color: black;
+    }
+
+</style>
+
+<div class="container mt-5">
+    <div class="post-container">
+        <h1><%= post.title %></h1>
+        <p><%= post.content %></p>
+        <p><small>Posted on: <%= post.createdAt.toDateString() %></small></p>
+    </div>
+
+    <div class="btn-container mt-3">
+        <form action="/blogs/<%= post._id %>/like" method="POST">
+            <button type="submit" class="btn btn-light like"><%= post.likes %> <i class="fa-regular fa-thumbs-up"></i></button>
+        </form>
+
+        <form action="/blogs/<%= post._id %>/dislike" method="POST">
+            <button type="submit" class="btn btn-light dislike"><%= post.dislikes %> <i class="fa-regular fa-thumbs-down"></i></button>
+        </form>
+
+        <a href="/blogs/<%= post._id %>/edit" class="btn btn-edit"><i class="fa-solid fa-pen-to-square"></i></a>
+
+        <form action="/blogs/<%= post._id %>?_method=DELETE" method="POST">
+            <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>
+        </form>
+
+        <!-- Summarize Button -->
+        <form action="/ai/<%= post._id %>/summarize" method="POST">
+            <input type="hidden" name="content" value="<%= post.content %>">
+            <button type="submit" class="btn btn-info">Summarize</button>
+        </form>
+    </div>
+
+    <hr>
+
+    <h3>Comments (<%= post.comments.length %>)</h3>
+
+    <form action="/comments/<%= post._id %>/comment" method="POST" class="mt-3">
+        <textarea name="text" class="form-control" required placeholder="Add a comment..."></textarea>
+        <button type="submit" class="btn btn-edit mt-2">Comment</button>
+    </form>
+
+    <div class="mt-4">
+        <% post.comments.forEach(comment => { %>
+            <div class="comments mt-3">
+                <p><%= comment.text %></p>
+                <div class="d-flex justify-content-between">
+                    <small>Posted on: <%= comment.createdAt.toDateString() %></small>
+                    <form action="/comments/<%= post._id %>/comment/<%= comment._id %>?_method=DELETE" method="POST">
+                        <button type="submit" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
+                    </form>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+</div>

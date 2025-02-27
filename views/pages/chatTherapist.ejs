@@ -1,0 +1,86 @@
+<% layout("/layouts/boilerplate") %>
+
+<div id="chat-box" style="height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;"></div>
+<input type="text" id="message-input" placeholder="Type your message...">
+<button onclick="sendMessage()">Send</button>
+<button onclick="startCall()">Video Call</button>
+
+<div id="video-call-container" style="display: none;">
+    <video id="local-video" autoplay playsinline></video>
+    <video id="remote-video" autoplay playsinline></video>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
+<script>
+    const socket = io();
+    const userId = "<%= user._id %>";
+    const recipientId = "<%= recipient._id %>";
+
+    socket.on('connect', () => {
+        console.log("Connected to Socket.io server!");
+    });
+
+    socket.on('disconnect', () => {
+        console.log("Disconnected from Socket.io server!");
+    });
+
+    function sendMessage() {
+        let message = document.getElementById('message-input').value;
+        if (message.trim() !== "") {
+            socket.emit('chatMessage', { sender: userId, receiver: recipientId, message });
+            document.getElementById('message-input').value = '';
+        }
+    }
+
+    socket.on('messageReceived', (data) => {
+        let chatBox = document.getElementById('chat-box');
+        chatBox.innerHTML += `<p><strong>${data.sender}:</strong> ${data.message}</p>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+    });
+
+    // Video Call Implementation
+    const peer = new Peer(userId, { host: '/', port: 3000, path: '/peerjs' });
+
+    function startCall() {
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+            document.getElementById('local-video').srcObject = stream;
+            document.getElementById('video-call-container').style.display = "block";
+
+            const call = peer.call(recipientId, stream);
+            call.on('stream', (remoteStream) => {
+                document.getElementById('remote-video').srcObject = remoteStream;
+            });
+
+            socket.emit('callUser', { userToCall: recipientId, from: userId, signal: call });
+        });
+    }
+
+    peer.on('call', (call) => {
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+            call.answer(stream);
+            document.getElementById('local-video').srcObject = stream;
+            document.getElementById('video-call-container').style.display = "block";
+
+            call.on('stream', (remoteStream) => {
+                document.getElementById('remote-video').srcObject = remoteStream;
+            });
+        });
+    });
+
+    socket.on('incomingCall', (data) => {
+        if (confirm("You have an incoming video call. Accept?")) {
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+                document.getElementById('local-video').srcObject = stream;
+                document.getElementById('video-call-container').style.display = "block";
+
+                const call = peer.call(data.from, stream);
+                call.on('stream', (remoteStream) => {
+                    document.getElementById('remote-video').srcObject = remoteStream;
+                });
+
+                socket.emit('answerCall', { to: data.from, signal: call });
+            });
+        }
+    });
+</script>

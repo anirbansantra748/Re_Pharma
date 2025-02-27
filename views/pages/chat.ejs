@@ -1,0 +1,53 @@
+<% layout("/layouts/boilerplate") %>
+
+<div>
+    <h2>AI Chat</h2>
+    <div id="chat-box" style="border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: auto;"></div>
+
+    <input type="text" id="message-input" name="message" placeholder="Type your message..." required>
+    <button id="send-button">Send</button>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const chatBox = document.getElementById("chat-box");
+        const messageInput = document.getElementById("message-input");
+        const sendButton = document.getElementById("send-button");
+
+        sendButton.addEventListener("click", async () => {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            // Append user message to chat
+            appendMessage("You", message);
+
+            // Clear input field
+            messageInput.value = "";
+
+            try {
+                // Send API request
+                const response = await fetch("/ai/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message })
+                });
+
+                const data = await response.json();
+
+                // Append AI response to chat
+                appendMessage("AI", data.response || "No response received.");
+            } catch (error) {
+                appendMessage("AI", "Error contacting AI.");
+            }
+        });
+
+        function appendMessage(sender, text) {
+            const messageDiv = document.createElement("div");
+            messageDiv.innerHTML = `<strong>${sender}:</strong> ${text}`;
+            chatBox.appendChild(messageDiv);
+
+            // Scroll to the latest message
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    });
+</script>

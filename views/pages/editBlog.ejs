@@ -1,0 +1,40 @@
+<% layout("/layouts/boilerplate") %>
+<style>
+
+    :root{
+        --primCol : rgb(210, 231, 229);
+        --bgCol : rgb(151, 189, 210);
+        --SecCol : #003F53;
+        --terCol: #54978B;
+        --quadCol: #7de8d5;
+    }
+    
+    body {
+        background-color: var(--bgCol); 
+        color: var(--SecCol);
+    }
+    .btn{
+        background-color: var(--SecCol);
+        color: white;
+    }
+    .btn:hover{
+        background-color: var(--primCol);
+        border-color: #4DA485;
+        color: black;
+    }
+    
+</style>
+<div class="container mt-5">
+    <h1>Edit Post</h1>
+    <form action="/blogs/<%= post._id %>?_method=PUT" method="POST">
+        <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input type="text" name="title" class="form-control" value="<%= post.title %>" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Content</label>
+            <textarea name="content" class="form-control" rows="5" required><%= post.content %></textarea>
+        </div>
+        <button type="submit" class="btn ">Update</button>
+    </form>
+</div>
