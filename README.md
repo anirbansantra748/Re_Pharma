@@ -1,4 +1,4 @@
-# 🏥 MedTech Platform: AI-Powered Healthcare Assistant & Consultation Hub
+# 🏥 Re-Pharma : AI-Powered Healthcare Assistant & Consultation Hub
 
 ## 📖 Table of Contents
 - [🚀 Project Overview](#-project-overview)
@@ -15,7 +15,7 @@
 ---
 
 ## 🚀 Project Overview
-🔹 The **MedTech Platform** is an innovative healthcare solution that bridges the gap between **patients** and **doctors**.  
+🔹 The **Re-Pharma** is an innovative healthcare solution that bridges the gap between **patients** and **doctors**.  
 🔹 Our **AI-powered assistant** provides **initial health assessments** based on user inputs and suggests preventive measures.  
 🔹 Users can **consult verified doctors** via **chat & video calls** for more in-depth analysis.  
 🔹 Additionally, an **anonymous blog** allows users to **seek support from the community**.  
