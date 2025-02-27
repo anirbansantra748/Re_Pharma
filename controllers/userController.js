@@ -223,7 +223,7 @@ module.exports.predictHeartDisease = async (req, res) => {
     try {
         const { userId } = req.body;
         const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyBeXpxnjQ9QwXMqk3U4LxVjbJreNYJVj_s`;
 
         const userSymptoms = JSON.stringify(req.body);
 
@@ -264,7 +264,7 @@ module.exports.predictDiabetes = async (req, res) => {
     try {
         const { userId, sugarLevel } = req.body;
         const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyBeXpxnjQ9QwXMqk3U4LxVjbJreNYJVj_s`;
 
         const prompt = `
             Given the following symptoms, assess the likelihood of diabetes.
