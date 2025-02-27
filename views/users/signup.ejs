@@ -1,9 +1,9 @@
 <% layout('layouts/boilerplate') %>
 
 <style>
-    :root{
-        --primCol : rgb(210, 231, 229);
-        --SecCol : #003F53;
+    :root {
+        --primCol: rgb(210, 231, 229);
+        --SecCol: #003F53;
         --terCol: #54978B;
         --quadCol: #7de8d5;
     }
@@ -70,8 +70,31 @@
             </select>
         </div>
 
+        <!-- Emergency Contacts Section -->
+        <div id="emergencyContacts">
+            <h4>Emergency Contacts</h4>
+            <div class="mb-3">
+                <label for="emergencyName1" class="form-label">Contact 1 Name:</label>
+                <input type="text" id="emergencyName1" name="emergencyContacts[0][name]" class="form-control input-dark" placeholder="Enter name">
+            </div>
+            <div class="mb-3">
+                <label for="emergencyPhone1" class="form-label">Contact 1 Phone Number:</label>
+                <input type="text" id="emergencyPhone1" name="emergencyContacts[0][phoneNumber]" class="form-control input-dark" placeholder="Enter phone number">
+            </div>
+
+            <div class="mb-3">
+                <label for="emergencyName2" class="form-label">Contact 2 Name:</label>
+                <input type="text" id="emergencyName2" name="emergencyContacts[1][name]" class="form-control input-dark" placeholder="Enter name">
+            </div>
+            <div class="mb-3">
+                <label for="emergencyPhone2" class="form-label">Contact 2 Phone Number:</label>
+                <input type="text" id="emergencyPhone2" name="emergencyContacts[1][phoneNumber]" class="form-control input-dark" placeholder="Enter phone number">
+            </div>
+        </div>
+
         <!-- Therapist Fields (Hidden by Default) -->
         <div id="therapistFields" class="d-none">
+            <h4>Therapist Details</h4>
             <div class="mb-3">
                 <label for="specialization" class="form-label">Specialization:</label>
                 <input type="text" id="specialization" name="specialization" class="form-control input-dark">

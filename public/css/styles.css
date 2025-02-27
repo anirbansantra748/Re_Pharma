@@ -1,16 +1,15 @@
-
-
 .body{
     padding:0;
     margin:0;
-    
-}
-:root{
-    --primCol: rgb(229, 246, 253);
-    --secCol: rgb(46, 140, 70);
-    --terCol: rgb(51, 210, 202);
-    --backCol: rgb(191, 211, 182);
+    font-family: Arial, sans-serif;
 }
 
+
+:root{
+    --primCol : rgb(210, 231, 229);
+    --SecCol : #003F53;
+    --terCol: #54978B;
+    --quadCol: #7de8d5;
+}
 
 

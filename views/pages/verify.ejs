@@ -1,43 +1,198 @@
 <% layout('layouts/boilerplate') %>
+<style>
+/* Therapist Verification Container */
+.therapist-verification-container {
+    max-width: 80vw;
+    margin: 50px auto;
+    background-color: var(--SecCol);
+    padding: 30px;
+    border-radius: 10px;
+    color: var(--primCol);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
 
-<body style="color: #ffffff; font-family: Arial, sans-serif;">
-    <div style="max-width: 500px; margin: 50px auto; background-color: rgba(0, 0, 0, 0.8); padding: 30px; border-radius: 10px;">
-        <h2 style="text-align: center; color: #ffda79;">Therapist Verification</h2>
+.therapist-verification-container:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+}
 
-        <% if (therapist.isVerified) { %>
-            <p style="color: green; text-align: center;">✅ Your account is verified as a therapist.</p>
-        <% } else { %>
-            <p style="color: red; text-align: center;">⚠️ Your account is not verified. Submit your verification links below.</p>
+/* Title Styling */
+.verification-title {
+    color: var(--quadCol);
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+}
 
-            <form action="/therapists/submit-verification" method="POST">
-                <div id="linkInputs">
-                    <div style="margin-bottom: 15px;">
-                        <label for="verificationLinks">Enter Document Link:</label>
-                        <input type="url" name="verificationLinks" required>
-                    </div>
-                </div>
+/* Verification Messages */
+.verification-message {
+    font-size: 1rem;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
 
-                <button type="button" onclick="addLinkField()">+ Add More Links</button>
-                <button type="submit">Submit Verification</button>
-            </form>
-        <% } %>
+.verified {
+    background-color: rgba(0, 255, 0, 0.1);
+    color: limegreen;
+    border: 1px solid limegreen;
+}
 
-        <% if (therapist.verificationDocuments.length > 0) { %>
-            <h3 style="text-align: center; color: #ffda79;">Uploaded Links</h3>
-            <ul>
-                <% therapist.verificationDocuments.forEach(link => { %>
-                    <li><a href="<%= link %>" target="_blank" style="color: #ffda79;"><%= link %></a></li>
-                <% }); %>
-            </ul>
-        <% } %>
-    </div>
+.not-verified {
+    background-color: rgba(255, 0, 0, 0.1);
+    color: red;
+    border: 1px solid red;
+}
 
-    <script>
-        function addLinkField() {
-            let container = document.getElementById("linkInputs");
-            let input = document.createElement("div");
-            input.innerHTML = '<div style="margin-bottom: 15px;"><input type="url" name="verificationLinks" required></div>';
-            container.appendChild(input);
-        }
-    </script>
-</body>
+/* Form Styling */
+.verification-form {
+    text-align: left;
+    margin-top: 20px;
+}
+
+.verification-form label {
+    font-weight: bold;
+    color: var(--quadCol);
+}
+
+/* Input Field Styling */
+.input-group {
+    margin-bottom: 15px;
+    display: block;
+}
+#verificationLinks{
+    width: 60vw;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.form-control {
+    
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--terCol);
+    border-radius: 5px;
+    background-color: #b8babb;
+    color: white;
+    transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+    background-color: #333;
+    color: white;
+    border-color: var(--terCol);
+    outline: none;
+    box-shadow: 0 0 8px rgba(84, 151, 139, 0.7);
+}
+
+/* Buttons */
+.btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-add-link {
+    background-color: var(--quadCol);
+    color: var(--SecCol);
+    margin-top: 10px;
+}
+
+.btn-add-link:hover {
+    background-color: var(--terCol);
+    color: white;
+    transform: scale(1.02);
+}
+
+.btn-submit {
+    background-color: var(--terCol);
+    color: white;
+    margin-top: 10px;
+}
+
+.btn-submit:hover {
+    background-color: var(--quadCol);
+}
+
+/* Uploaded Links */
+.uploaded-links-title {
+    color: var(--quadCol);
+    font-size: 1.5rem;
+    margin-top: 20px;
+}
+
+.verification-links {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.verification-links li {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.uploaded-link {
+    color: var(--quadCol);
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease-in-out, text-decoration 0.3s ease-in-out;
+}
+
+.uploaded-link:hover {
+    color: white;
+    text-decoration: underline;
+}
+
+</style>
+
+<div class="login-container therapist-verification-container">
+    <h2 class="text-center verification-title">Therapist Verification</h2>
+
+    <% if (therapist.isVerified) { %>
+        <p class="verification-message verified">✅ Your account is verified as a therapist.</p>
+    <% } else { %>
+        <p class="verification-message not-verified">⚠️ Your account is not verified. Submit your verification links below.</p>
+
+        <form action="/therapists/submit-verification" method="POST" class="verification-form">
+            <div id="linkInputs">
+                <div class="input-group">
+    <label for="verificationLinks" class="form-label d-block">Enter Document Link:</label>
+    <input type="url" id="verificationLinks" name="verificationLinks" class="form-control input-dark" required>
+</div>
+
+            </div>
+
+            <button type="button" class="btn btn-add-link" onclick="addLinkField()">+ Add More Links</button>
+            <button type="submit" class="btn btn-submit">Submit Verification</button>
+        </form>
+    <% } %>
+
+    <% if (therapist.verificationDocuments.length > 0) { %>
+        <h3 class="text-center uploaded-links-title">Uploaded Links</h3>
+        <ul class="verification-links">
+            <% therapist.verificationDocuments.forEach(link => { %>
+                <li><a href="<%= link %>" target="_blank" class="uploaded-link"><%= link %></a></li>
+            <% }); %>
+        </ul>
+    <% } %>
+</div>
+
+<script>
+    function addLinkField() {
+        let container = document.getElementById("linkInputs");
+        let input = document.createElement("div");
+        input.classList.add("input-group");
+        input.innerHTML = '<input type="url" name="verificationLinks" class="form-control input-dark" required>';
+        container.appendChild(input);
+    }
+</script>
