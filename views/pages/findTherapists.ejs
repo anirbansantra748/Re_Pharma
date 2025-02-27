@@ -91,10 +91,19 @@
             <p class="mb-1 text-muted">
                 <strong>Speciality:</strong> <%= therapist.specialization %>
             </p>
+            <a href="/users/chat/<%= therapist.user._id %>" class="btn btn-primary">
+                <i class="fas fa-comment-alt"></i> Chat
+            </a>
         </div>
+        <form action="/consultations/request/<%= therapist.user._id %>" method="POST">
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-user-md"></i> Request Consultation
+            </button>
+        </form>
         <span class="<%= therapist.isVerified ? 'text-success' : 'text-danger' %> fw-bold">
             <%= therapist.isVerified ? '✅ Verified' : '❌ Not Verified' %>
         </span>
+
     </div>
 </div>
 
