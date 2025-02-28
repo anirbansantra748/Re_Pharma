@@ -50,14 +50,21 @@
 1️⃣ **Clone the repository**  
 sh
 1️⃣ **Clone the repository** 
-  git clone https://github.com/yourusername/medtech-platform.git
-  cd medtech-platform
+  - git clone https://github.com/yourusername/medtech-platform.git
+  
+ -  cd medtech-platform
+  
 2️⃣ Install dependencies
-  npm install
+
+  - npm install
+  
 3️⃣ Set up environment variables
-  cp .env.example .env
+
+  - cp .env.example .env
+  
 4️⃣ Start the development server
-  npm run dev
+
+  - npm run dev
 
 📌 Usage
 
