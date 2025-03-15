@@ -2,42 +2,43 @@
 
 <style>
     :root {
-        --primCol: rgb(210, 231, 229);
-        --bgCol: rgb(151, 189, 210);
-        --SecCol: #003F53;
-        --terCol: #54978B;
-        --quadCol: #7de8d5;
+        --primary-color: #004d40;
+        --secondary-color: #00796b;
+        --background-color: #e0f2f1;
+        --accent-color: #26a69a;
+        --text-color: #333;
     }
 
     body {
-        background-color: var(--bgCol);
-        color: var(--SecCol);
+        background-color: var(--background-color);
+        color: var(--text-color);
+        font-family: Arial, sans-serif;
     }
 
-    .search, .search-results {
-        background-color: var(--SecCol);
-        color: white;
-    }
-
-    .btn {
-        background-color: #4DA485;
-        border-color: #4DA485;
-    }
-
-    .btn:hover {
-        background-color: var(--bgCol);
-        color: black;
-    }
-    .card{
-        width: 100%;
-
-    }
-    .list-group-item{
-        background-color: #d8eaeb;
-    }
-    .therapist-card {
-        background: #fff;
+    .search-container, .results-container {
+        background: white;
+        padding: 20px;
         border-radius: 12px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .btn-custom {
+        background-color: var(--secondary-color);
+        border: none;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 6px;
+        transition: 0.3s ease-in-out;
+    }
+
+    .btn-custom:hover {
+        background-color: var(--primary-color);
+    }
+
+    .therapist-card {
+        background: white;
+        border-radius: 10px;
         padding: 15px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         display: flex;
@@ -53,7 +54,7 @@
     .therapist-name a {
         font-size: 18px;
         font-weight: bold;
-        color: #007bff;
+        color: var(--secondary-color);
         text-decoration: none;
     }
 
@@ -63,139 +64,83 @@
 
     .therapist-specialty {
         font-size: 14px;
-        color: #6c757d;
+        color: #555;
         margin-bottom: 10px;
     }
 
     .therapist-actions {
         display: flex;
-        align-items: center;
         gap: 10px;
-    }
-
-    .btn-primary, .btn-success {
-        padding: 8px 12px;
-        font-size: 14px;
-        border-radius: 6px;
-        transition: all 0.3s ease-in-out;
-    }
-
-    .btn-primary:hover {
-        background-color: #0056b3;
-    }
-
-    .btn-success:hover {
-        background-color: #218838;
-    }
-
-    .verification-status {
-        font-weight: bold;
-        font-size: 14px;
     }
 </style>
 
-<title>Search Therapists</title>
-<div class="search mt-5 p-4 rounded shadow">
-    <h1 class="mb-3 text-center">Find a Therapist</h1>
+<title>Find a Therapist</title>
 
-    <!-- Search Form -->
-    <form action="/therapists/find" method="GET">
-        <div class="row g-3">
-            <div class="col-md-4">
-                <input type="text" class="form-control" name="name" placeholder="Enter name"
-                       value="<%= searchQuery.name || '' %>">
+<div class="container mt-5">
+    <!-- Search Section -->
+    <div class="search-container">
+        <h2 class="text-center">Find a Therapist</h2>
+        <form action="/therapists/find" method="GET">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="name" placeholder="Enter name" value="<%= searchQuery.name || '' %>">
+                </div>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="specialization" placeholder="Enter specialization" value="<%= searchQuery.specialization || '' %>">
+                </div>
+                <div class="col-md-4">
+                    <select class="form-select" name="isVerified">
+                        <option value="">Verification Status</option>
+                        <option value="true" <%= searchQuery.isVerified === 'true' ? 'selected' : '' %>>Verified</option>
+                        <option value="false" <%= searchQuery.isVerified === 'false' ? 'selected' : '' %>>Not Verified</option>
+                    </select>
+                </div>
             </div>
-
-            <div class="col-md-4">
-                <input type="text" class="form-control" name="specialization" placeholder="Enter specialization"
-                       value="<%= searchQuery.specialization || '' %>">
-            </div>
-
-            <div class="col-md-4">
-                <select class="form-select" name="isVerified">
-                    <option value="">Verification Status</option>
-                    <option value="true" <%= searchQuery.isVerified === 'true' ? 'selected' : '' %>>Verified</option>
-                    <option value="false" <%= searchQuery.isVerified === 'false' ? 'selected' : '' %>>Not Verified</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="text-center mt-3">
-            <button type="submit" class="btn px-4">
-                <i class="fa-solid fa-search"></i> Search
-            </button>
-        </div>
-    </form>
-</div>
-
-<!-- Display Results -->
-<div class="search-results mt-4 p-4 rounded shadow">
-    <h2 class="text-center mb-3">Therapist List</h2>
-
-    <div class="res mt-4">
-        <% if (therapists.length > 0) { %>
-            <ul class="list-group">
-                <% therapists.forEach(therapist => { %>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div class="card shadow-sm p-3 mb-3 border-0">
-
-    <div class="therapist-card">
-    <div class="therapist-details">
-        <h5 class="therapist-name">
-            <a href="/therapists/<%= therapist._id %>">
-                <%= therapist.user.username %>
-            </a>
-        </h5>
-        <p class="therapist-specialty">
-            <strong>Specialty:</strong> <%= therapist.specialization %>
-        </p>
-        <div class="therapist-actions">
-            <a href="/users/chat/<%= therapist.user._id %>" class="btn btn-primary">
-                <i class="fas fa-comment-alt"></i> Chat
-            </a>
-            <form action="/consultations/request/<%= therapist.user._id %>" method="POST">
-                <button type="submit" class="btn btn-success">
-                    <i class="fas fa-user-md"></i> Request Consultation
+            <div class="text-center mt-3">
+                <button type="submit" class="btn btn-custom">
+                    <i class="fa-solid fa-search"></i> Search
                 </button>
-            </form>
-        </div>
-
-    <div class="d-flex align-items-center">
-        <div class="flex-grow-1">
-            <h5 class="mb-1">
-                <a href="/therapists/<%= therapist._id %>" class="text-decoration-none text-primary fw-bold">
-                    <%= therapist.user.username %>
-                </a>
-            </h5>
-            <p class="mb-1 text-muted">
-                <strong>Speciality:</strong> <%= therapist.specialization %>
-            </p>
-            <a href="/users/chat/<%= therapist.user._id %>" class="btn btn-primary">
-                <i class="fas fa-comment-alt"></i> Chat
-            </a>
-        </div>
-        <form action="/consultations/request/<%= therapist.user._id %>" method="POST">
-            <button type="submit" class="btn btn-success">
-                <i class="fas fa-user-md"></i> Request Consultation
-            </button>
+            </div>
         </form>
-        <span class="<%= therapist.isVerified ? 'text-success' : 'text-danger' %> fw-bold">
-            <%= therapist.isVerified ? '✅ Verified' : '❌ Not Verified' %>
-        </span>
-
     </div>
-    <span class="verification-status <%= therapist.isVerified ? 'text-success' : 'text-danger' %>">
-        <%= therapist.isVerified ? '✅ Verified' : '❌ Not Verified' %>
-    </span>
-</div>
-</div>
 
-                    </li>
-                <% }); %>
-            </ul>
-        <% } else { %>
-            <p class="text-center">No therapists found.</p>
-        <% } %>
+    <!-- Results Section -->
+    <div class="results-container">
+        <h2 class="text-center">Therapist List</h2>
+        <div class="res mt-4">
+            <% if (therapists.length > 0) { %>
+                <div class="list-group">
+                    <% therapists.forEach(therapist => { %>
+                        <div class="therapist-card">
+                            <div class="therapist-details">
+                                <h5 class="therapist-name">
+                                    <a href="/therapists/<%= therapist._id %>">
+                                        <%= therapist.user.username %>
+                                    </a>
+                                </h5>
+                                <p class="therapist-specialty">
+                                    <strong>Specialty:</strong> <%= therapist.specialization %>
+                                </p>
+                                <div class="therapist-actions">
+                                    <a href="/users/chat/<%= therapist.user._id %>" class="btn btn-custom">
+                                        <i class="fas fa-comment-alt"></i> Chat
+                                    </a>
+                                    <form action="/consultations/request/<%= therapist.user._id %>" method="POST">
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="fas fa-user-md"></i> Request Consultation
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            <span class="<%= therapist.isVerified ? 'text-success' : 'text-danger' %>">
+                                <%= therapist.isVerified ? '✅ Verified' : '❌ Not Verified' %>
+                            </span>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } else { %>
+                <p class="text-center">No therapists found.</p>
+            <% } %>
+        </div>
     </div>
 </div>
-</body>

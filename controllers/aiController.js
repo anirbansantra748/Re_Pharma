@@ -1,11 +1,11 @@
 require("dotenv").config();
 const axios = require("axios");
 console.log("Loaded API Key:", process.env.GEMINI_API_KEY);
-
+const wrapAsync = require('../middleware/wrapAsync')
 const GEMINI_API_KEY = "AIzaSyBeXpxnjQ9QwXMqk3U4LxVjbJreNYJVj_s"; // Ensure you have this in your .env file
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-module.exports.summarizeBlog = async (req, res) => {
+module.exports.summarizeBlog = wrapAsync(async (req, res) => {
     try {
         const { content } = req.body;
         if (!content) return res.status(400).json({ error: "No blog content provided" });
@@ -23,15 +23,14 @@ module.exports.summarizeBlog = async (req, res) => {
         console.error("Summarization error:", error.response?.data || error.message);
         res.status(500).json({ error: "Error summarizing blog" });
     }
-};
-
+})
 
 //
 module.exports.renderChat = async (req,res)=>{
     res.render('pages/chat.ejs')
 }
 
-module.exports.chatWithAI = async (req, res) => {
+module.exports.chatWithAI = wrapAsync(async (req, res) => {
     try {
         const { message } = req.body;
         if (!message) return res.status(400).json({ error: "No message provided" });
@@ -48,4 +47,4 @@ module.exports.chatWithAI = async (req, res) => {
         console.error("Error:", error.message);
         res.status(500).json({ error: "AI request failed" });
     }
-};
+})

@@ -1,0 +1,22 @@
+<% layout("/layouts/boilerplate") %>
+<style>
+    body { background-color: #f8d7da; }
+    .error-container { text-align: center; padding: 50px; max-width: 600px; margin: auto; }
+    .error-code { font-size: 80px; font-weight: bold; color: #721c24; }
+    .error-message { font-size: 24px; color: #721c24; margin-top: 20px; }
+    .btn-home { background-color: #dc3545; color: white; padding: 10px 20px; border: none; border-radius: 5px; text-decoration: none; }
+    .btn-home:hover { background-color: #a71d2a; }
+</style>
+
+<body>
+    <div class="error-container">
+        <div class="error-code">
+            <%= error.status || 500 %>
+        </div>
+        <div class="error-message">
+            <%= error.message || "Something went wrong!" %>
+        </div>
+        <br>
+        <a href="/home" class="btn-home">Go to Home</a>
+    </div>
+</body>

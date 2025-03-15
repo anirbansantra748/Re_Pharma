@@ -29,7 +29,9 @@ app.engine('ejs', engine);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-mongoose.connect('mongodb://127.0.0.1:27017/NEWMYAPP')
+let mongoUrl = 'mongodb://127.0.0.1:27017/NEWMYAPP'
+
+mongoose.connect(mongoUrl)
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('MongoDB connection error:', err));
 
@@ -87,7 +89,17 @@ io.on('connection', (socket) => {
     });
 });
 
+// 404 Not Found Handler
+app.use((req, res, next) => {
+    res.status(404).render('error', { error: { status: 404, message: "Page Not Found" } });
+});
+
+// General Error Handler
+app.use((err, req, res, next) => {
+    const { status = 500, message = "Something went wrong" } = err;
+    res.status(status).render('error', { error: { status, message } });
+});
+
 server.listen(port, () => {
     console.log(`App is running on port ${port}`);
 });
-//ch

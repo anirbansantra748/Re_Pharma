@@ -2,7 +2,9 @@ const mongoose = require('mongoose');
 
 const therapistSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Reference to the User
+    wholeName: {type: String,required: true},
     specialization: { type: String, required: true },
+    description: {type: String, required: true},
     experience: { type: Number, required: true }, // Years of experience
     profileImage: { type: String, default: "/images/default-profile.jpg" }, // Therapist's profile image
     phone: { type: String, default: "N/A" }, // Contact number

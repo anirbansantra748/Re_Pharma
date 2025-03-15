@@ -1,74 +1,85 @@
 const User = require('../models/userSchema')
 const axios = require('axios');
 const Therapist = require('../models/therapistSchema');
-const Consultation = require('../models/consultationSchema')
+const Consultation = require('../models/consultationSchema');
+const { isLoggedIn } = require('../middleware/isLoggedIn');
+const wrapAsync = require('../middleware/wrapAsync');
 //login
 module.exports.renderLogin = (req, res) => {
     res.render('users/login.ejs');
 };
 
-//register postrout
-module.exports.registerUser = async (req, res) => {
-	try {
-		const {
-			username,
-			email,
-			password,
-			gender,
-			role,
-			specialization,
-			experience,
-			emergencyContacts,
-		} = req.body;
 
-		// Check if user already exists
-		let existingUser = await User.findOne({ email });
-		if (existingUser) {
-			return res.status(400).send("Email already exists!");
-		}
+module.exports.registerUser = wrapAsync(async (req, res) => {
+    try {
+        const {
+            username,
+            email,
+            password,
+            gender,
+            role,
+            specialization,
+            experience,
+            wholeName,
+            description,
+            phone,
+            location,
+            emergencyContacts,
+        } = req.body;
 
-		// Parse emergency contacts if provided
-		let parsedEmergencyContacts = [];
-		if (emergencyContacts && Array.isArray(emergencyContacts)) {
-			parsedEmergencyContacts = emergencyContacts.map((contact) => ({
-				name: contact.name,
-				phoneNumber: contact.phoneNumber,
-			}));
-		}
+        // Check if user already exists
+        let existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).send("Email already exists!");
+        }
 
-		// Create new User
-		const newUser = new User({
-			username,
-			email,
-			gender,
-			role,
-			emergencyContacts: parsedEmergencyContacts, // Store emergency contacts
-		});
+        // Parse emergency contacts properly
+        let parsedEmergencyContacts = [];
+        if (emergencyContacts && Array.isArray(emergencyContacts)) {
+            parsedEmergencyContacts = emergencyContacts.map(contact => ({
+                name: contact.name,
+                phoneNumber: contact.phoneNumber,
+            }));
+        }
 
-		// Register user with Passport
-		const registeredUser = await User.register(newUser, password);
+        // Create new User
+        const newUser = new User({
+            username,
+            email,
+            gender,
+            role,
+            emergencyContacts: parsedEmergencyContacts, // Store emergency contacts
+        });
 
-		// If user is a therapist, create Therapist profile
-		if (role === "therapist") {
-			const newTherapist = new Therapist({
-				user: registeredUser._id,
-				specialization,
-				experience,
-			});
-			await newTherapist.save();
+        // Register user with Passport
+        const registeredUser = await User.register(newUser, password);
 
-			// Link therapist profile to the user
-			registeredUser.therapistProfile = newTherapist._id;
-			await registeredUser.save();
-		}
+        // If the user is a therapist, create Therapist profile
+        let therapistProfile = null;
+        if (role === "therapist") {
+            therapistProfile = new Therapist({
+                user: registeredUser._id,
+                wholeName,
+                location,
+                specialization,
+                description,
+                experience,
+                phone: phone || "N/A",
+                location: location || "Unknown",
+            });
+            await therapistProfile.save();
 
-		res.redirect("/home"); // Redirect to home or login page
-	} catch (error) {
-		console.error(error);
-		res.status(500).send("Internal Server Error");
-	}
-};
+            // Link therapist profile to the user
+            registeredUser.therapistProfile = therapistProfile._id;
+            await registeredUser.save();
+        }
 
+        res.redirect("/home"); // Redirect to home or login page
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+})
 
 //register
 module.exports.renderRegister = (req,res)=>{
@@ -155,70 +166,6 @@ module.exports.predictDesies = (req, res) => {
     res.render('pages/predictDisease.ejs', { prediction: null });
 };
 
-
-// module.exports.predictHeartDisease = async (req, res) => {
-//     try {
-//         const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-//         const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-//         const userSymptoms = JSON.stringify(req.body);
-
-//         const prompt = `
-//             You are a medical AI assistant. Based on the given symptoms, assess the risk of heart disease.
-//             Respond with only one of the following: "Likelihood: High", "Likelihood: Medium", or "Likelihood: Low".
-//             Symptoms: ${userSymptoms}
-//         `;
-
-//         const response = await axios.post(GEMINI_API_URL, {
-//             contents: [{ role: "user", parts: [{ text: prompt }] }]
-//         });
-
-//         let prediction = response.data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "No result";
-
-//         // Ensure the output strictly matches expected values
-//         const validResponses = ["Likelihood: High", "Likelihood: Medium", "Likelihood: Low"];
-//         if (!validResponses.includes(prediction)) {
-//             prediction = "Likelihood: Unable to determine";
-//         }
-
-//         res.render("pages/predictDisease.ejs", { prediction });
-//     } catch (error) {
-//         console.error("Error predicting heart disease:", error.response?.data || error.message);
-//         res.render("pages/predictDisease.ejs", { prediction: "Error predicting heart disease" });
-//     }
-// };
-
-// module.exports.predictDiabetes = async (req, res) => {
-//     try {
-//         const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-//         const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-//         const userSymptoms = JSON.stringify(req.body);
-
-//         const prompt = `
-//             Given the following symptoms, assess the likelihood of diabetes.
-//             Symptoms: ${userSymptoms}
-//             Response format: "Likelihood: High/Medium/Low".
-
-//             Use the following logic:
-//             - High: If glucose level is above 180, insulin level is abnormal, or blood pressure is very high.
-//             - Medium: If glucose is between 140-180, moderate insulin imbalance, or slightly high blood pressure.
-//             - Low: If glucose is below 140 and vitals are mostly normal.
-//         `;
-
-//         const response = await axios.post(GEMINI_API_URL, {
-//             contents: [{ role: "user", parts: [{ text: prompt }] }]
-//         });
-
-//         const prediction = response.data.candidates?.[0]?.content?.parts?.[0]?.text || "No result";
-
-//         res.render("pages/predictDisease.ejs", { prediction });
-//     } catch (error) {
-//         console.error(error);
-//         res.render("pages/predictDisease.ejs", { prediction: "Error predicting diabetes" });
-//     }
-// };
-
 module.exports.predictHeartDisease = async (req, res) => {
     try {
         const { userId } = req.body;
@@ -299,3 +246,4 @@ module.exports.predictDiabetes = async (req, res) => {
         res.render("pages/predictDisease.ejs", { prediction: "Error predicting diabetes" });
     }
 };
+

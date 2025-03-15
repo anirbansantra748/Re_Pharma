@@ -1,19 +1,20 @@
 const Therapist = require('../models/therapistSchema');
 const User = require('../models/userSchema');
 const Consultation = require('../models/consultationSchema')
+const wrapAsync = require('../middleware/wrapAsync')
 
 // ✅ Render the Therapist Verification Page
-module.exports.renderVerificationPage = async (req, res) => {
+module.exports.renderVerificationPage = wrapAsync(async (req, res) => {
     if (req.user.role !== "therapist") {
         return res.status(403).send("Unauthorized! Only therapists can access this page.");
     }
 
     const therapist = await Therapist.findOne({ user: req.user._id });
     res.render('pages/verify.ejs', { therapist });
-};
+})
 
 // ✅ Therapist Submits Multiple Verification Links
-module.exports.submitVerificationLink = async (req, res) => {
+module.exports.submitVerificationLink = wrapAsync(async (req, res) => {
     try {
         let { verificationLinks } = req.body; // Get multiple links as an array
         if (!Array.isArray(verificationLinks)) {
@@ -35,7 +36,7 @@ module.exports.submitVerificationLink = async (req, res) => {
         console.error(error);
         res.status(500).send("Internal Server Error");
     }
-};
+})
 
 // ✅ Render the search page with all therapists initially
 module.exports.renderSearchPage = async (req, res) => {
@@ -84,37 +85,21 @@ module.exports.renderChatPage = async (req, res) => {
     res.render('pages/chat.ejs');
 }
 
-// module.exports.findTherapist =  async (req, res) => {
+// module.exports.findTherapistProfile = async (req, res) => {
 //     try {
 //         const therapist = await Therapist.findById(req.params.id).populate('user').lean();
-//         const user = await User.findById()
+//         const user = req.user; // ✅ Use `req.user` to get the currently logged-in user
 
 //         if (!therapist) {
 //             return res.status(404).send("Therapist not found");
 //         }
 
-//         res.render('pages/therapistProfile.ejs', { therapist });
+//         res.render('pages/therapistProfile.ejs', { therapist, user }); // ✅ Pass `user` to EJS
 //     } catch (error) {
 //         console.error(error);
 //         res.status(500).send("Internal Server Error");
 //     }
 // };
-
-module.exports.findTherapistProfile = async (req, res) => {
-    try {
-        const therapist = await Therapist.findById(req.params.id).populate('user').lean();
-        const user = req.user; // ✅ Use `req.user` to get the currently logged-in user
-
-        if (!therapist) {
-            return res.status(404).send("Therapist not found");
-        }
-
-        res.render('pages/therapistProfile.ejs', { therapist, user }); // ✅ Pass `user` to EJS
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-    }
-};
 
 // module.exports.findTherapists = async (req, res) => {
 //     try {
@@ -132,6 +117,25 @@ module.exports.findTherapistProfile = async (req, res) => {
 //         res.status(500).send("Internal Server Error");
 //     }
 // };
+
+module.exports.findTherapistProfile = async (req, res) => {
+    try {
+        const therapist = await Therapist.findById(req.params.id)
+            .populate('user', 'username email') // Populate user details (username, email)
+            .populate('consultations') // Populate consultations if needed
+            .lean();
+
+        if (!therapist) {
+            return res.status(404).send("Therapist not found");
+        }
+
+        res.render('pages/therapistProfile.ejs', { therapist, user: req.user }); // ✅ Pass `user` for logged-in details
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
 
 module.exports.requestConsultation = async (req, res) => {
     try {
@@ -155,7 +159,7 @@ module.exports.requestConsultation = async (req, res) => {
     }
 };
 
-module.exports.renderTherapistDashboard = async (req, res) => {
+module.exports.renderTherapistDashboard = wrapAsync(async (req, res) => {
     try {
         if (req.user.role !== "therapist") {
             return res.status(403).send("Unauthorized");
@@ -167,4 +171,4 @@ module.exports.renderTherapistDashboard = async (req, res) => {
         console.error(error);
         res.status(500).send("Internal Server Error");
     }
-};
+})
