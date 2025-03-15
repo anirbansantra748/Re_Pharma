@@ -68,8 +68,7 @@ sh
 
 📌 Usage
 
-🔹 Access the platform: http://localhost:3000
-
+🔹 Access the platform: https://re-pharma.onrender.com/home
 🔹 Interact with the AI assistant to get initial health assessments.
 
 🔹 Consult a doctor if needed.
