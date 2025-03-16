@@ -68,7 +68,7 @@ sh
 
 📌 Usage
 
-🔹 Access the platform: https://re-pharma.onrender.com/home
+🔹 Access the platform: https://re-pharma-pcx3.onrender.com/home
 🔹 Interact with the AI assistant to get initial health assessments.
 
 🔹 Consult a doctor if needed.
